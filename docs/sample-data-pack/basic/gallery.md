@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta charset="utf-8">
-  <title>Gallery</title>
-</head>
-
-<body>
   <h1>moving-background</h1>
   <img style="width:20vh" src="static-html/background/moving-background.png" alt="moving-background">
   <hr>
@@ -43,6 +33,3 @@
   <hr>
   <h1>monkey</h1>
   <img style="width:20vh" src="static-html/monkey/monkey.gif" alt="monkey">
-</body>
-
-</html>
