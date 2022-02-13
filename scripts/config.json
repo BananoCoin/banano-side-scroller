@@ -38,13 +38,13 @@
     },
     {
       "dir": "ground",
-      "img": "ground",
+      "img": "ground1",
       "file": "ground1.png",
       "type": "image/png"
     },
     {
       "dir": "ground",
-      "img": "ground",
+      "img": "ground2",
       "file": "ground2.png",
       "type": "image/png"
     },
