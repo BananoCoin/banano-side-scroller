@@ -133,7 +133,7 @@ const getTempData = (account, ip) => {
 const initWebServer = async () => {
   const app = express();
 
-  app.engine('.hbs', exphbs({
+  app.engine('.hbs', exphbs.engine({
     extname: '.hbs',
     defaultLayout: 'main',
   }));

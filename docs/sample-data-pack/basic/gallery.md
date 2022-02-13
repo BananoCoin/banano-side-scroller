@@ -14,7 +14,9 @@
   <img style="width:20vh" src="static-html/ground/water.png" alt="water">
   <hr>
   <h1>ground</h1>
-  <img style="width:20vh" src="static-html/ground/ground.png" alt="ground">
+  <img style="width:20vh" src="static-html/ground/ground1.png" alt="ground">
+  <br>
+  <img style="width:20vh" src="static-html/ground/ground2.png" alt="ground">
   <hr>
   <h1>obstacle</h1>
   <img style="width:20vh" src="static-html/ground/obstacle.png" alt="obstacle">

@@ -39,7 +39,13 @@
     {
       "dir": "ground",
       "img": "ground",
-      "file": "ground.png",
+      "file": "ground1.png",
+      "type": "image/png"
+    },
+    {
+      "dir": "ground",
+      "img": "ground",
+      "file": "ground2.png",
       "type": "image/png"
     },
     {

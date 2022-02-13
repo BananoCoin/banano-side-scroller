@@ -87,7 +87,7 @@ const loadPngChunks = async () => {
                 index = -1;
                 break;
               case 'aa7942ff':
-                // ground
+                // ground1
                 index = 0;
                 break;
               case '0433ffff':
@@ -113,6 +113,10 @@ const loadPngChunks = async () => {
               case 'ffffffff':
                 // obstacle
                 index = 6;
+                break;
+              case '00f900ff':
+                // ground2
+                index = 7;
                 break;
               default:
                 loggingUtil.log(dateUtil.getDate(), 'loadPngChunks', 'unknown pixel', 'ix', ix, 'pixel', pixel);
