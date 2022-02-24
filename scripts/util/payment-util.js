@@ -39,15 +39,15 @@ const init = (_config, _loggingUtil) => {
   walletAccountBalanceDescription = 'loading...';
 
   if (!fs.existsSync(config.sessionPayoutDataDir)) {
-    fs.mkdirSync(config.sessionPayoutDataDir, {recursive: true});
+    fs.mkdirSync(config.sessionPayoutDataDir, { recursive: true });
   }
 
   if (!fs.existsSync(config.highScoreDataDir)) {
-    fs.mkdirSync(config.highScoreDataDir, {recursive: true});
+    fs.mkdirSync(config.highScoreDataDir, { recursive: true });
   }
 
   if (!fs.existsSync(config.accountHighScoreDataDir)) {
-    fs.mkdirSync(config.accountHighScoreDataDir, {recursive: true});
+    fs.mkdirSync(config.accountHighScoreDataDir, { recursive: true });
   }
 };
 
@@ -58,7 +58,7 @@ const deactivate = () => {
 };
 
 const getBigIntMax = (...args) => {
-  return args.reduce((m, e) => e > m ? e : m);
+  return args.reduce((m, e) => (e > m ? e : m));
 };
 
 const msToTime = (duration) => {
@@ -68,9 +68,13 @@ const msToTime = (duration) => {
   let minutes = Math.floor((duration / (1000 * 60)) % 60);
   let hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-  hours = (hours < 10) ? '0' + hours : hours;
-  minutes = (minutes < 10) ? '0' + minutes : minutes;
-  seconds = (seconds < 10) ? '0' + seconds : seconds;
+  // prettier-ignore
+  const trailingZeroFn = () => {
+    hours = (hours < 10) ? '0' + hours : hours;
+    minutes = (minutes < 10) ? '0' + minutes : minutes;
+    seconds = (seconds < 10) ? '0' + seconds : seconds;
+  };
+  trailingZeroFn();
 
   return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
 };
@@ -132,7 +136,7 @@ const getSessionInfo = async () => {
       const sessionDuration = BigInt(config.sessionDurationMs);
       const currentTime = BigInt(Date.now());
       const currentDuration = currentTime - sessionStartTime;
-      const remainingDuration = getBigIntMax(ZERO, sessionDuration-currentDuration);
+      const remainingDuration = getBigIntMax(ZERO, sessionDuration - currentDuration);
       if (remainingDuration <= ZERO) {
         sessionInfo.closed = true;
       }
@@ -157,7 +161,7 @@ const receivePending = async (representative, seed, seedIx) => {
   let noPending = false;
   while (!noPending) {
     const pending = await bananojs.getAccountsPending([account], config.maxPendingBananos, true);
-    if (pending!== undefined) {
+    if (pending !== undefined) {
       // loggingUtil.log(dateUtil.getDate(), 'account', account, 'pending', pending);
       if (pending.error) {
         noPending = true;
@@ -210,7 +214,7 @@ const getAccountBalanceDescription = async (seed, seedIx) => {
 
 const getPayoutBalance = (accountInfo) => {
   const balance = BigInt(accountInfo.balance);
-  const sessionPayoutRatio = BigInt(parseFloat(config.sessionPayoutRatio)*100);
+  const sessionPayoutRatio = BigInt(parseFloat(config.sessionPayoutRatio) * 100);
   const payoutBalance = (balance * sessionPayoutRatio) / ONE_HUNDRED;
   return payoutBalance;
 };
@@ -227,7 +231,7 @@ const getAccountHighScores = async () => {
         const score = parseInt(json.score, 10);
         const account = json.account;
         const version = json.version;
-        highScores.push({date: fileNm, score: score, account: account, version: version});
+        highScores.push({ date: fileNm, score: score, account: account, version: version });
       });
     }
   } finally {
@@ -250,8 +254,7 @@ const setAccountHighScore = async (account, version, score) => {
       const json = JSON.parse(data);
       const highScore = parseInt(json.score, 10);
 
-      loggingUtil.log(dateUtil.getDate(), 'setAccountHighScore', 'score',
-          score, 'highScore', highScore );
+      loggingUtil.log(dateUtil.getDate(), 'setAccountHighScore', 'score', score, 'highScore', highScore);
 
       if (score > highScore) {
         isHighScore = true;
@@ -273,7 +276,6 @@ const setAccountHighScore = async (account, version, score) => {
   }
 };
 
-
 const getHighScores = async () => {
   const highScores = [];
   const mutexRelease = await mutex.acquire();
@@ -283,7 +285,7 @@ const getHighScores = async () => {
         const file = path.join(config.highScoreDataDir, fileNm);
         const data = fs.readFileSync(file, 'UTF-8');
         const highScore = parseInt(data, 10);
-        highScores.push({date: fileNm, score: highScore});
+        highScores.push({ date: fileNm, score: highScore });
       });
     }
   } finally {
@@ -305,8 +307,7 @@ const setHighScore = async (score) => {
       const data = fs.readFileSync(file, 'UTF-8');
       const highScore = parseInt(data, 10);
 
-      loggingUtil.log(dateUtil.getDate(), 'setHighScore', 'score',
-          score, 'highScore', highScore );
+      loggingUtil.log(dateUtil.getDate(), 'setHighScore', 'score', score, 'highScore', highScore);
 
       if (score > highScore) {
         isHighScore = true;
@@ -352,8 +353,7 @@ const payEverybodyAndReopenSession = async () => {
     await setHighScore(highScore);
     await setAccountHighScore(highScoreAccount, VERSION, highScore);
 
-    loggingUtil.log(dateUtil.getDate(), 'payment', 'scores.length',
-        scores.length, 'maxScore', maxScore);
+    loggingUtil.log(dateUtil.getDate(), 'payment', 'scores.length', scores.length, 'maxScore', maxScore);
 
     if (maxScore > ZERO) {
       const account = await bananojs.getBananoAccountFromSeed(config.walletSeed, config.walletSeedIx);
@@ -362,8 +362,7 @@ const payEverybodyAndReopenSession = async () => {
         const payoutBalance = getPayoutBalance(accountInfo);
         const rawPerScore = payoutBalance / maxScore;
 
-        loggingUtil.log(dateUtil.getDate(), 'payment', 'rawPerScore',
-            rawPerScore, 'payoutBalance', payoutBalance);
+        loggingUtil.log(dateUtil.getDate(), 'payment', 'rawPerScore', rawPerScore, 'payoutBalance', payoutBalance);
         let previous = undefined;
         for (let scoreIx = 0; scoreIx < scores.length; scoreIx++) {
           try {
@@ -377,24 +376,35 @@ const payEverybodyAndReopenSession = async () => {
             const seed = config.walletSeed;
             const seedIx = config.walletSeedIx;
             if (bananoRaw > ZERO) {
-              const result = await bananojs.sendBananoWithdrawalFromSeed(seed,
-                  seedIx, account, bananoDecimal, representative, previous);
+              const result = await bananojs.sendBananoWithdrawalFromSeed(seed, seedIx, account, bananoDecimal, representative, previous);
               // add wait so you don't fork block yourself.
-              loggingUtil.log(dateUtil.getDate(), 'payment', scoreIx, 'of',
-                  scores.length, 'account', account, 'score', score, 'bananoDecimal',
-                  bananoDecimal, 'bananoRaw', bananoRaw, 'result', result);
+              loggingUtil.log(
+                dateUtil.getDate(),
+                'payment',
+                scoreIx,
+                'of',
+                scores.length,
+                'account',
+                account,
+                'score',
+                score,
+                'bananoDecimal',
+                bananoDecimal,
+                'bananoRaw',
+                bananoRaw,
+                'result',
+                result
+              );
               previous = result;
             }
           } catch (error) {
-            loggingUtil.log(dateUtil.getDate(), 'payment', 'error',
-                error.message);
+            loggingUtil.log(dateUtil.getDate(), 'payment', 'error', error.message);
           }
         }
       }
     }
   } catch (error) {
-    loggingUtil.log(dateUtil.getDate(), 'payment', 'error',
-        error.message);
+    loggingUtil.log(dateUtil.getDate(), 'payment', 'error', error.message);
   } finally {
     setSessionStartTime();
   }

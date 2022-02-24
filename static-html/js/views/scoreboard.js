@@ -1,4 +1,4 @@
-import {clear, addText, addChildElement, displayErrorMessage} from '../lib/util.js';
+import { clear, addText, addChildElement, displayErrorMessage } from '../lib/util.js';
 
 const ZERO = BigInt(0);
 
@@ -195,7 +195,7 @@ const loadPayouts = async () => {
       const banano = balanceParts.banano;
 
       const count = totalSendCount[account];
-      const accountElt = addChildElement(trElt, 'td' );
+      const accountElt = addChildElement(trElt, 'td');
       addText(accountElt, account);
       const amountElt = addChildElement(trElt, 'td');
       addText(amountElt, banano);
@@ -240,7 +240,7 @@ const loadPayouts = async () => {
         const accountElt = addChildElement(trElt, 'td', {
           class: 'align_top small',
         });
-        addText(accountElt, accountIx+1, {
+        addText(accountElt, accountIx + 1, {
           title: account,
         });
       });

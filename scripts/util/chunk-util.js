@@ -62,25 +62,25 @@ const loadPngChunks = async () => {
 
         let ix = 0;
         for (let y = 0; y < decodedData.height; y++) {
-          const y1 = decodedData.height-(y+1);
+          const y1 = decodedData.height - (y + 1);
           for (let x = 0; x < decodedData.width; x++) {
-            let r = pixels[ix+0].toString(16);
+            let r = pixels[ix + 0].toString(16);
             if (r.length == 1) {
               r = '0' + r;
             }
-            let g = pixels[ix+1].toString(16);
+            let g = pixels[ix + 1].toString(16);
             if (g.length == 1) {
               g = '0' + g;
             }
-            let b = pixels[ix+2].toString(16);
+            let b = pixels[ix + 2].toString(16);
             if (b.length == 1) {
               b = '0' + b;
             }
-            let a = pixels[ix+3].toString(16);
+            let a = pixels[ix + 3].toString(16);
             if (a.length == 1) {
               a = '0' + a;
             }
-            const pixel = r+g+b+a;
+            const pixel = r + g + b + a;
             let index = -1;
             switch (pixel) {
               case '00000000':
@@ -128,17 +128,18 @@ const loadPngChunks = async () => {
 
             indexes[x][y1] = index;
 
-            ix+=4;
+            ix += 4;
           }
         }
 
-        const id = parseInt(fileNm.substring(0, fileNm.length-4), 0);
+        const id = parseInt(fileNm.substring(0, fileNm.length - 4), 0);
 
         // loggingUtil.log(dateUtil.getDate(), 'loadPngChunks', 'file', fileNm, 'id', id, 'indexes', JSON.stringify(indexes));
 
         config.chunks.push({
           id: id,
-          chunk: indexes});
+          chunk: indexes,
+        });
       }
     }
   }

@@ -124,7 +124,7 @@ const verify = async (token, ip) => {
 const incrementStatusCount = (status) => {
   if (statusCountMap.has(status)) {
     const statusCount = statusCountMap.get(status);
-    statusCountMap.set(status, statusCount+1);
+    statusCountMap.set(status, statusCount + 1);
   } else {
     statusCountMap.set(status, 1);
   }
@@ -134,7 +134,7 @@ const getStatusCountMapArray = () => {
   const array = [];
   const entries = [...statusCountMap.entries()];
   entries.forEach((entry) => {
-    array.push({status: entry[0], count: entry[1]});
+    array.push({ status: entry[0], count: entry[1] });
   });
   return array;
 };

@@ -1,4 +1,5 @@
-/* eslint-disable */ 
+/* eslint-disable */
+// prettier-ignore
 // canvas-confetti v1.4.0 built on 2021-03-10T12:32:33.488Z
 !(function(window, module) {
 // source content

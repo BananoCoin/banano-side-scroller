@@ -37,6 +37,7 @@ const addAttributes = (child, attributes) => {
 
 const displayErrorMessage = (message) => {
   const errorMessageElt = document.querySelector('#errorMessage');
+  // prettier-ignore
   if ((message == undefined) || (message.length == 0)) {
     errorMessageElt.innerText = '';
   } else {

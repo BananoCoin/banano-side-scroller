@@ -11,7 +11,9 @@
     "jsonlint": "jsonlint -q package.json;jsonlint -q scripts;jsonlint -q config.json;",
     "new-config": "node scripts/new-config.js",
     "npm-check-updates": "npm-check-updates --target minor -u",
-    "preflight": "find . -name '.DS_Store' | xargs rm;npm update;npm run npm-check-updates;npm outdated;npm i;npm audit fix;npm run eslint;npm run jsonlint;",
+    "remove-ds-store": "find . -name '.DS_Store' | xargs rm",
+    "preflight": "npm run remove-ds-store && npm update && npm run npm-check-updates && npm i && npm audit fix && npm run eslint && npm run prettier && npm outdated",
+    "prettier": "prettier \"**/**.{ts,js,json,css,scss,html}\" --single-quote --write",
     "start": "node -max-old-space-size=1700 scripts/index.js",
     "screenstart": "screen -dmSL side_scroller npm start;screen -x side_scroller",
     "screenrestart": "npm stop;screen -x side_scroller;screen -dmSL side_scroller npm start;screen -x side_scroller",
@@ -20,12 +22,12 @@
   "author": "Coranos",
   "license": "MIT",
   "dependencies": {
-    "@bananocoin/bananojs": "^2.5.2",
+    "@bananocoin/bananojs": "^2.5.3",
     "await-semaphore": "^0.1.3",
-    "body-parser": "^1.19.1",
+    "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "express-handlebars": "^6.0.2",
     "mkdirp": "^1.0.4",
     "png-js": "^1.0.0",
@@ -34,12 +36,12 @@
   },
   "preferGlobal": true,
   "devDependencies": {
-    "@prantlf/jsonlint": "^10.2.0",
     "chai": "^4.3.6",
-    "eslint": "^7.32.0",
+    "eslint": "^8.9.0",
     "eslint-config-google": "^0.14.0",
-    "mocha": "^9.2.0",
-    "npm-check-updates": "^12.3.0",
-    "nyc": "^15.1.0"
+    "mocha": "^9.2.1",
+    "npm-check-updates": "^12.4.0",
+    "nyc": "^15.1.0",
+    "prettier": "^2.5.1"
   }
 }

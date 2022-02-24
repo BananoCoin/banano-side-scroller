@@ -1,4 +1,4 @@
-import {set} from '../lib/util.js';
+import { set } from '../lib/util.js';
 
 const bmcaptcha = {};
 bmcaptcha.MAX_IMAGES = 6;
@@ -6,7 +6,7 @@ bmcaptcha.captchaClickedCallback = () => {};
 bmcaptcha.secretKey = '';
 bmcaptcha.postJSON = (path, json, success, error) => {
   const xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
+  xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 200) {
         if (success) {
@@ -51,20 +51,20 @@ bmcaptcha.init = (id, captchaClickedCallback) => {
 
   const mainElt = document.querySelector('#side_scroller');
   const captchaElt = addChildElement(mainElt, 'div', {
-    'style': 'display:none',
-    'id': 'bm_captcha',
+    style: 'display:none',
+    id: 'bm_captcha',
   });
   addText(captchaElt, 'Captcha');
   addChildElement(captchaElt, 'br');
   const captchaAnchorElt = addChildElement(captchaElt, 'a', {
-    'onclick': 'bmcaptcha.captchaClicked(event)',
+    onclick: 'bmcaptcha.captchaClicked(event)',
   });
   for (let imageIx = 1; imageIx <= bmcaptcha.MAX_IMAGES; imageIx++) {
     addChildElement(captchaAnchorElt, 'img', {
-      'id': 'bm_captcha_image_' + imageIx,
-      'data_answer': imageIx,
-      'ismap': 'ismap',
-      'style': 'width:150px;',
+      id: 'bm_captcha_image_' + imageIx,
+      data_answer: imageIx,
+      ismap: 'ismap',
+      style: 'width:150px;',
     });
     if (imageIx == 3) {
       addChildElement(captchaAnchorElt, 'br');
@@ -119,4 +119,4 @@ bmcaptcha.showCaptcha = (callback) => {
   bmcaptcha.postJSON('bm-captcha-request', request, callbackWrapper);
 };
 
-export {bmcaptcha};
+export { bmcaptcha };

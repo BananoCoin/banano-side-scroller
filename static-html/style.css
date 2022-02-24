@@ -6,21 +6,29 @@ html {
   touch-action: manipulation;
 }
 
-body {}
+body {
+}
 
-footer {}
+footer {
+}
 
-h2 {}
+h2 {
+}
 
-h3 {}
+h3 {
+}
 
-p {}
+p {
+}
 
-th {}
+th {
+}
 
-ol {}
+ol {
+}
 
-hr {}
+hr {
+}
 
 a {
   text-decoration: none;
@@ -31,7 +39,8 @@ tr:target {
   background-color: #ffa;
 }
 
-a:link, a:visited {
+a:link,
+a:visited {
   color: white;
 }
 
@@ -177,19 +186,19 @@ a:hover {
 }
 
 .selected_player {
-  stroke: #FF0;
+  stroke: #ff0;
 }
 
 .selected_player:hover {
-  stroke: #AA0;
+  stroke: #aa0;
 }
 
 .selected_player:active {
-  stroke: #FF7;
+  stroke: #ff7;
 }
 
 .scaled1000pct {
-  transform: scale(10.0) translate(0px, 2.5px);
+  transform: scale(10) translate(0px, 2.5px);
 }
 
 .w340 {

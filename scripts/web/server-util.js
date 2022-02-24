@@ -73,13 +73,12 @@ const init = async (_config, _loggingUtil) => {
   for (let dataPackIx = 0; dataPackIx < config.dataPacks.length; dataPackIx++) {
     const dataPack = config.dataPacks[dataPackIx];
     if (dataPack.url.endsWith('/')) {
-      dataPack.url = dataPack.url.substring(0, dataPack.url.length-1);
+      dataPack.url = dataPack.url.substring(0, dataPack.url.length - 1);
     }
   }
 
   if (config.blockExplorerAccountPrefix.endsWith('/')) {
-    config.blockExplorerAccountPrefix =
-    config.blockExplorerAccountPrefix.substring(0, config.blockExplorerAccountPrefix.length-1);
+    config.blockExplorerAccountPrefix = config.blockExplorerAccountPrefix.substring(0, config.blockExplorerAccountPrefix.length - 1);
   }
 
   loadChunks();
@@ -89,7 +88,7 @@ const init = async (_config, _loggingUtil) => {
 const loadChunks = () => {
   chunksById = {};
   chunkIds.length = 0;
-  const json =config.chunks;
+  const json = config.chunks;
   json.forEach((elt) => {
     chunkIds.push(elt.id);
     chunksById[elt.id] = elt.chunk;
@@ -133,21 +132,28 @@ const getTempData = (account, ip) => {
 const initWebServer = async () => {
   const app = express();
 
-  app.engine('.hbs', exphbs.engine({
-    extname: '.hbs',
-    defaultLayout: 'main',
-  }));
+  app.engine(
+    '.hbs',
+    exphbs.engine({
+      extname: '.hbs',
+      defaultLayout: 'main',
+    })
+  );
   app.set('view engine', '.hbs');
 
   app.use(express.static('static-html'));
-  app.use(express.urlencoded({
-    limit: '50mb',
-    extended: true,
-  }));
-  app.use(bodyParser.json({
-    limit: '50mb',
-    extended: true,
-  }));
+  app.use(
+    express.urlencoded({
+      limit: '50mb',
+      extended: true,
+    })
+  );
+  app.use(
+    bodyParser.json({
+      limit: '50mb',
+      extended: true,
+    })
+  );
   app.use((err, req, res, next) => {
     if (err) {
       loggingUtil.log(dateUtil.getDate(), 'error', err.message, err.body);
@@ -177,8 +183,8 @@ const initWebServer = async () => {
     // 'adminKeyCookie', adminKeyCookie,
     // 'config.adminKey', config.adminKey);
 
-    data.admin = (adminKeyCookie == config.adminKey);
-    data.show_admin_login = (config.adminKey.length > 0);
+    data.admin = adminKeyCookie == config.adminKey;
+    data.show_admin_login = config.adminKey.length > 0;
 
     if (data.admin) {
       data.accounts = await bananojsCacheUtil.getAccountBalances();
@@ -251,7 +257,7 @@ const initWebServer = async () => {
         delete tempData.chunk_ids;
       } else {
         if (!sessionClosedFlag) {
-          const halfScore = parseInt(tempData.score/2, 0);
+          const halfScore = parseInt(tempData.score / 2, 0);
           await bananojsCacheUtil.incrementScore(account, ip, -halfScore);
         }
       }
@@ -285,7 +291,7 @@ const initWebServer = async () => {
   });
 
   app.post('/admin_key', async (req, res) => {
-    if ((req.body.admin_key === undefined)) {
+    if (req.body.admin_key === undefined) {
       const data = {
         success: false,
         message: 'no admin_key',
@@ -310,7 +316,7 @@ const initWebServer = async () => {
 
   app.post('/clear_score', async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    if ((req.body.admin_key === undefined)) {
+    if (req.body.admin_key === undefined) {
       const data = {
         success: false,
         message: 'no admin_key',
@@ -318,7 +324,7 @@ const initWebServer = async () => {
       res.end(JSON.stringify(data));
       return;
     }
-    if ((req.body.account === undefined)) {
+    if (req.body.account === undefined) {
       const data = {
         success: false,
         message: 'no account',
@@ -326,6 +332,7 @@ const initWebServer = async () => {
       res.end(JSON.stringify(data));
       return;
     }
+    // prettier-ignore
     if ((config.adminKey.length == 0) || (req.body.admin_key !== config.adminKey)) {
       const data = {
         success: false,
@@ -440,15 +447,15 @@ const initWebServer = async () => {
           const serverChunkId = tempData.chunk_ids[ix];
           if (serverChunkId != id) {
             data.message = `client chunk id '${id}' is not same as server chunk id '${serverChunkId}'`;
-          // logError = true;
+            // logError = true;
           } else {
             if (colIx > tempData.prev_col_ix) {
               tempData.prev_col_ix = colIx;
             }
             /**
-           * allow tempData.prev_col_ix - 2 because you can use the back arrows to get rewards.
-           */
-            if ((colIx >= tempData.prev_col_ix - 2)) {
+             * allow tempData.prev_col_ix - 2 because you can use the back arrows to get rewards.
+             */
+            if (colIx >= tempData.prev_col_ix - 2) {
               if (chunksById[id] !== undefined) {
                 const chunk = chunksById[id];
                 // loggingUtil.log('increment_score', 'chunk', chunk);
@@ -458,7 +465,7 @@ const initWebServer = async () => {
                   const value = col[rowIx];
                   switch (value) {
                     case REWARD_IX:
-                    // loggingUtil.log('increment_score', 'accountData.score', accountData.score);
+                      // loggingUtil.log('increment_score', 'accountData.score', accountData.score);
                       const rewardKey = `chunk:${ix};col:${colIx};row:${rowIx}`;
                       if (tempData.reward_set.has(rewardKey)) {
                         data.message = `in chunk '${ix}', reward key '${rewardKey}' was already claimed.'`;
@@ -489,15 +496,15 @@ const initWebServer = async () => {
                   }
                 } else {
                   data.message = `in chunk '${ix}', client col_ix '${colIx}' not found in server chunk of length ${chunk.length}`;
-                // logError = true;
+                  // logError = true;
                 }
               } else {
                 data.message = `in chunk '${ix}', client chunk_id '${id}' not found in server chunk_ids ${Object.keys(chunksById)}`;
-              // logError = true;
+                // logError = true;
               }
             } else {
               data.message = `in chunk '${ix}', client col_ix '${colIx}' is not server col_ix '${tempData.prev_col_ix}'`;
-            // logError = true;
+              // logError = true;
             }
           }
         }
@@ -658,7 +665,7 @@ const setCloseProgramFunction = (fn) => {
 };
 
 const setDataPackCookie = (res, dataPack) => {
-  res.cookie('data_pack', dataPack, {signed: true});
+  res.cookie('data_pack', dataPack, { signed: true });
 };
 
 const getDataPackCookie = (req) => {
@@ -672,7 +679,7 @@ const getDataPackCookie = (req) => {
 };
 
 const setAdminKeyCookie = (res, dataPack) => {
-  res.cookie('admin_key', dataPack, {signed: true});
+  res.cookie('admin_key', dataPack, { signed: true });
 };
 
 const getAdminKeyCookie = (req) => {

@@ -1,5 +1,5 @@
-import {get, set, clear, addChildSvgElement, displayErrorMessage} from '../lib/util.js';
-import {bmcaptcha} from '../lib/bm-captcha.js';
+import { get, set, clear, addChildSvgElement, displayErrorMessage } from '../lib/util.js';
+import { bmcaptcha } from '../lib/bm-captcha.js';
 
 const LOG_ALL_HREFS = false;
 const BACKGROUND_WIDTH = 700;
@@ -9,7 +9,7 @@ const PENALTY_SIZE = 85;
 const ASSET_SIZE = 75;
 const MOVE_DX = 25;
 const OBSTACLE_MAX_Y = BACKGROUND_HEIGHT - ASSET_SIZE;
-const FOREGROUND_MAX_Y = BACKGROUND_HEIGHT - (ASSET_SIZE*2);
+const FOREGROUND_MAX_Y = BACKGROUND_HEIGHT - ASSET_SIZE * 2;
 const FOREGROUND_START_Y = FOREGROUND_MAX_Y - 5;
 const BACKGROUND_IMAGE_WIDTH = 700;
 const FOREGROUND_DY = 15;
@@ -42,21 +42,9 @@ const STATIC_BACKGROUND_HREF = 'background/static-background';
 
 const MOVING_BACKGROUND_HREF = 'background/moving-background';
 
-const BACKGROUND_OBJECT_HREFS = [
-  'background/tipbot',
-  'background/donations',
-];
+const BACKGROUND_OBJECT_HREFS = ['background/tipbot', 'background/donations'];
 
-const assetsHrefs = [
-  GROUND1_HREF,
-  WATER_HREF,
-  REWARD_HREF,
-  OBSTACLE_HREF,
-  FLAVOR1_HREF,
-  FLAVOR2_HREF,
-  FLAVOR3_HREF,
-  GROUND2_HREF,
-];
+const assetsHrefs = [GROUND1_HREF, WATER_HREF, REWARD_HREF, OBSTACLE_HREF, FLAVOR1_HREF, FLAVOR2_HREF, FLAVOR3_HREF, GROUND2_HREF];
 
 const allHrefs = [
   MONKEY_HREF,
@@ -124,73 +112,73 @@ const onLoad = async () => {
   bmcaptcha.init('#side_scroller', captchaClicked);
 
   const svgElt = addChildSvgElement(mainElt, 'svg', {
-    'width': BACKGROUND_WIDTH,
-    'height': BACKGROUND_HEIGHT,
-    'stroke': 'black',
+    width: BACKGROUND_WIDTH,
+    height: BACKGROUND_HEIGHT,
+    stroke: 'black',
     'stroke-width': '2',
-    'style': 'background-color:darkgray',
-    'id': 'game',
+    style: 'background-color:darkgray',
+    id: 'game',
   });
   addChildSvgElement(svgElt, 'image', {
-    'y': '0',
-    'x': '0',
-    'width': BACKGROUND_WIDTH,
-    'height': BACKGROUND_HEIGHT,
-    'fill': 'none',
-    'stroke': 'none',
-    'class': 'background',
-    'data_dx': 0,
-    'href': STATIC_BACKGROUND_HREF,
+    y: '0',
+    x: '0',
+    width: BACKGROUND_WIDTH,
+    height: BACKGROUND_HEIGHT,
+    fill: 'none',
+    stroke: 'none',
+    class: 'background',
+    data_dx: 0,
+    href: STATIC_BACKGROUND_HREF,
   });
 
   for (let x = -BACKGROUND_IMAGE_WIDTH; x <= BACKGROUND_WIDTH; x += BACKGROUND_IMAGE_WIDTH) {
     addChildSvgElement(svgElt, 'image', {
-      'y': '0',
-      'x': x,
-      'width': BACKGROUND_IMAGE_WIDTH,
-      'height': BACKGROUND_HEIGHT,
-      'fill': 'none',
-      'stroke': 'none',
-      'class': 'background',
-      'data_dx': 10,
-      'href': MOVING_BACKGROUND_HREF,
+      y: '0',
+      x: x,
+      width: BACKGROUND_IMAGE_WIDTH,
+      height: BACKGROUND_HEIGHT,
+      fill: 'none',
+      stroke: 'none',
+      class: 'background',
+      data_dx: 10,
+      href: MOVING_BACKGROUND_HREF,
     });
   }
   addChildSvgElement(svgElt, 'image', {
-    'y': FOREGROUND_MAX_Y-ASSET_SIZE,
-    'x': ASSET_SIZE,
-    'width': ASSET_SIZE,
-    'height': ASSET_SIZE*2,
-    'fill': 'none',
-    'stroke': 'none',
-    'class': 'background',
-    'data_dx': 10,
-    'href': BACKGROUND_OBJECT_HREFS[0],
+    y: FOREGROUND_MAX_Y - ASSET_SIZE,
+    x: ASSET_SIZE,
+    width: ASSET_SIZE,
+    height: ASSET_SIZE * 2,
+    fill: 'none',
+    stroke: 'none',
+    class: 'background',
+    data_dx: 10,
+    href: BACKGROUND_OBJECT_HREFS[0],
   });
 
   addChildSvgElement(svgElt, 'image', {
-    'y': FOREGROUND_MAX_Y-ASSET_SIZE,
-    'x': (BACKGROUND_IMAGE_WIDTH/2)+ASSET_SIZE,
-    'width': ASSET_SIZE,
-    'height': ASSET_SIZE*2,
-    'fill': 'none',
-    'stroke': 'none',
-    'class': 'background',
-    'data_dx': 10,
-    'href': BACKGROUND_OBJECT_HREFS[1],
+    y: FOREGROUND_MAX_Y - ASSET_SIZE,
+    x: BACKGROUND_IMAGE_WIDTH / 2 + ASSET_SIZE,
+    width: ASSET_SIZE,
+    height: ASSET_SIZE * 2,
+    fill: 'none',
+    stroke: 'none',
+    class: 'background',
+    data_dx: 10,
+    href: BACKGROUND_OBJECT_HREFS[1],
   });
 
   const groupSvgElt = addChildSvgElement(svgElt, 'g');
 
   addChildSvgElement(svgElt, 'image', {
-    'y': FOREGROUND_START_Y,
-    'x': ASSET_SIZE,
-    'width': ASSET_SIZE,
-    'height': ASSET_SIZE,
-    'fill': 'red',
-    'stroke': 'none',
-    'class': 'foreground',
-    'href': MONKEY_HREF,
+    y: FOREGROUND_START_Y,
+    x: ASSET_SIZE,
+    width: ASSET_SIZE,
+    height: ASSET_SIZE,
+    fill: 'red',
+    stroke: 'none',
+    class: 'foreground',
+    href: MONKEY_HREF,
   });
 
   const sessionPauseTimeCallback = async () => {
@@ -301,9 +289,7 @@ const incrementScore = async (rewardElt) => {
   const colIx = rewardElt.dataset.chunkColIx;
   const rowIx = rewardElt.dataset.chunkRowIx;
   const account = window.localStorage.account;
-  const url = '/increment_score?' +
-   `account=${account}&id=${id}&ix=${ix}&col_ix=${colIx}`+
-   `&row_ix=${rowIx}&token=${grecaptchaToken}`;
+  const url = '/increment_score?' + `account=${account}&id=${id}&ix=${ix}&col_ix=${colIx}` + `&row_ix=${rowIx}&token=${grecaptchaToken}`;
   const response = await fetch(url, {
     method: 'GET',
   });
@@ -313,7 +299,7 @@ const incrementScore = async (rewardElt) => {
     displayErrorMessage(responseJson.message);
   } else {
     if (responseJson.retrySeconds !== undefined) {
-      retryNow = Date.now() + (responseJson.retrySeconds * 1000);
+      retryNow = Date.now() + responseJson.retrySeconds * 1000;
       // displayErrorMessage(retryNowMsg);
     }
   }
@@ -407,14 +393,14 @@ const loadBoard = async (groupSvgElt) => {
                 break;
             }
             addChildSvgElement(groupSvgElt, 'image', {
-              'y': y,
-              'x': x,
-              'width': ASSET_SIZE,
-              'height': ASSET_SIZE,
-              'fill': 'none',
-              'stroke': 'none',
-              'class': classNm,
-              'href': href,
+              y: y,
+              x: x,
+              width: ASSET_SIZE,
+              height: ASSET_SIZE,
+              fill: 'none',
+              stroke: 'none',
+              class: classNm,
+              href: href,
               'data-chunk-ix': ix,
               'data-chunk-id': id,
               'data-chunk-col-ix': chunkColumnIx,
@@ -512,7 +498,7 @@ const moveBackground = () => {
     const x = parseFloat(get(backgroundElt, 'x'));
     const eltWidth = parseFloat(get(backgroundElt, 'width'));
     if (x < -eltWidth) {
-      set(backgroundElt, 'x', (x - dx) + BACKGROUND_IMAGE_WIDTH + eltWidth);
+      set(backgroundElt, 'x', x - dx + BACKGROUND_IMAGE_WIDTH + eltWidth);
     } else {
       set(backgroundElt, 'x', x - dx);
     }
@@ -651,8 +637,8 @@ const moveForegroundDown = async () => {
     }
     if (penaltyJump) {
       winConfetti();
-      moveUp({isTrusted: true});
-      if ((!score.startsWith('0')) && (score != LOADING)) {
+      moveUp({ isTrusted: true });
+      if (!score.startsWith('0') && score != LOADING) {
         score == LOADING;
         await incrementScore(penlatyJumpElt);
       }
@@ -779,7 +765,6 @@ const showCaptcha = () => {
   bmcaptcha.showCaptcha(callback);
 };
 
-
 const keyDown = (e) => {
   switch (e.keyCode) {
     case 37:
@@ -797,7 +782,6 @@ const keyDown = (e) => {
   }
 };
 
-
 const winConfetti = () => {
   // console.log('winConfetti', 'continueConfetti', continueConfetti);
   if (continueConfetti) {
@@ -806,19 +790,21 @@ const winConfetti = () => {
   continueConfetti = true;
   const count = 20;
   const defaults = {
-    origin: {y: 0.7},
+    origin: { y: 0.7 },
     shapes: ['square', 'circle', 'emoji:🔥'],
     colors: ['#FFFF00', '#00FF00'],
   };
 
   /**
-  * @param {String} particleRatio the particle ratio
-  * @param {String} opts the options
-  */
+   * @param {String} particleRatio the particle ratio
+   * @param {String} opts the options
+   */
   function fire(particleRatio, opts) {
-    confetti(Object.assign({}, defaults, opts, {
-      particleCount: Math.floor(count * particleRatio),
-    }));
+    confetti(
+      Object.assign({}, defaults, opts, {
+        particleCount: Math.floor(count * particleRatio),
+      })
+    );
   }
 
   if (continueConfetti) {
@@ -860,7 +846,6 @@ const synchJumpCount = () => {
   const jumpCountElt = document.querySelector('#jumpCount');
   jumpCountElt.innerText = remainingJumpCount;
 };
-
 
 window.bmcaptcha = bmcaptcha;
 window.onLoad = onLoad;

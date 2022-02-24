@@ -61,7 +61,6 @@ const init = async () => {
     process.exit(1);
   });
 
-
   setTimeout(paymentFn, 0);
   setInterval(paymentFn, config.sessionStatusPollTimeMs);
 
@@ -113,6 +112,7 @@ const closeProgram = async () => {
   process.exit(0);
 };
 
+// prettier-ignore
 const isObject = function(obj) {
   return (!!obj) && (obj.constructor === Object);
 };
@@ -135,8 +135,7 @@ const overrideConfig = () => {
   loggingUtil.debug('SUCCESS overrideConfig', config);
 };
 
-init()
-    .catch((e) => {
-      console.log('FAILURE init.', e.message);
-      console.trace('FAILURE init.', e);
-    });
+init().catch((e) => {
+  console.log('FAILURE init.', e.message);
+  console.trace('FAILURE init.', e);
+});
