@@ -49,4 +49,4 @@ const addText = (parent, childText) => {
   parent.appendChild(document.createTextNode(childText));
 };
 
-export {clear, get, set, addText, addChildElement, addChildSvgElement, displayErrorMessage};
+export { clear, get, set, addText, addChildElement, addChildSvgElement, displayErrorMessage };

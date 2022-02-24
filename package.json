@@ -7,8 +7,7 @@
     "url": "git+https://github.com/BananoCoin/side-scroller.git"
   },
   "scripts": {
-    "eslint": "eslint --fix 'scripts/**/*.js';eslint --fix 'static-html/**/*.js';",
-    "jsonlint": "jsonlint -q package.json;jsonlint -q scripts;jsonlint -q config.json;",
+    "eslint": "eslint --fix '**/*.js'",
     "new-config": "node scripts/new-config.js",
     "npm-check-updates": "npm-check-updates --target minor -u",
     "remove-ds-store": "find . -name '.DS_Store' | xargs rm",
