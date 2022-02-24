@@ -181,6 +181,17 @@ const onLoad = async () => {
     href: MONKEY_HREF,
   });
 
+  addChildSvgElement(svgElt, 'image', {
+    y: FOREGROUND_START_Y,
+    x: ASSET_SIZE,
+    width: ASSET_SIZE,
+    height: ASSET_SIZE,
+    fill: 'red',
+    stroke: 'none',
+    class: 'shadow',
+    href: MONKEY_HREF,
+  });
+
   const sessionPauseTimeCallback = async () => {
     const response = await fetch('/session_pause_time', {
       method: 'GET',
@@ -195,7 +206,7 @@ const onLoad = async () => {
 
   await sessionPauseTimeCallback();
 
-  setInterval(() => {
+  setInterval(async () => {
     if (captchaStatus == CAPTCHA_HIDDEN) {
       if (boardLoaded) {
         if (sessionClosed) {
@@ -216,12 +227,13 @@ const onLoad = async () => {
             moveObstacle();
             moveReward();
             movePenalty();
-            moveForegroundDown();
-            updateScore();
+            await moveForegroundDown();
+            await moveShadowDown();
+            await updateScore();
           }
         }
       } else {
-        loadBoard(groupSvgElt);
+        await loadBoard(groupSvgElt);
       }
     }
   }, INTERVAL);
@@ -455,6 +467,18 @@ const moveRight = (event) => {
 };
 
 const moveForeground = (x, y) => {
+  moveMonkey(x, y, 'foreground', false);
+};
+
+const moveShadow = (x, y) => {
+  moveMonkey(x, y, 'shadow', true);
+};
+
+const moveShadowUp = () => {
+  moveShadow(0, -MOVE_Y);
+};
+
+const moveMonkey = (x, y, monkeyClassNm, isShadow) => {
   if (sessionClosed) {
     displayErrorMessage('cannot move when session is closed.');
     return;
@@ -463,7 +487,7 @@ const moveForeground = (x, y) => {
     displayErrorMessage('cannot move when captcha is displayed.');
     return;
   }
-  const foregroundElts = [...document.getElementsByClassName('foreground')];
+  const foregroundElts = [...document.getElementsByClassName(monkeyClassNm)];
   foregroundElts.forEach((foregroundElt) => {
     const eltX = parseFloat(get(foregroundElt, 'x'));
     const eltY = parseFloat(get(foregroundElt, 'y'));
@@ -590,6 +614,14 @@ const moveFlavor = () => {
 };
 
 const moveForegroundDown = async () => {
+  await moveMonkeyDown('foreground', false);
+};
+
+const moveShadowDown = async () => {
+  await moveMonkeyDown('shadow', true);
+};
+
+const moveMonkeyDown = async (monkeyClassNm, isShadow) => {
   if (sessionClosed) {
     return;
   }
@@ -599,48 +631,54 @@ const moveForegroundDown = async () => {
 
   const obstacleElts = [...document.getElementsByClassName('obstacle')];
   const penaltyElts = [...document.getElementsByClassName('penalty')];
-  const foregroundElts = [...document.getElementsByClassName('foreground')];
+  const monkeyElts = [...document.getElementsByClassName(monkeyClassNm)];
 
-  for (let foregroundEltIx = 0; foregroundEltIx < foregroundElts.length; foregroundEltIx++) {
-    const foregroundElt = foregroundElts[foregroundEltIx];
-    const y = parseFloat(get(foregroundElt, 'y'));
+  for (let monkeyEltIx = 0; monkeyEltIx < monkeyElts.length; monkeyEltIx++) {
+    const monkeyElt = monkeyElts[monkeyEltIx];
+    const y = parseFloat(get(monkeyElt, 'y'));
     let penaltyJump = false;
     let penlatyJumpElt = undefined;
     let moveDown = true;
     let updateJumpCount = false;
     obstacleElts.forEach((obstacleElt) => {
-      if (intersect(obstacleElt, foregroundElt, ASSET_INTERSECT_HEIGHT, ASSET_INTERSECT_HEIGHT, ASSET_SIZE)) {
+      if (intersect(obstacleElt, monkeyElt, ASSET_INTERSECT_HEIGHT, ASSET_INTERSECT_HEIGHT, ASSET_SIZE)) {
         moveDown = false;
         updateJumpCount = true;
       }
     });
     for (let penaltyEltIx = 0; penaltyEltIx < penaltyElts.length; penaltyEltIx++) {
       const penaltyElt = penaltyElts[penaltyEltIx];
-      if (intersect(penaltyElt, foregroundElt, ASSET_INTERSECT_HEIGHT, ASSET_INTERSECT_HEIGHT, PENALTY_SIZE)) {
+      if (intersect(penaltyElt, monkeyElt, ASSET_INTERSECT_HEIGHT, ASSET_INTERSECT_HEIGHT, PENALTY_SIZE)) {
         moveDown = false;
         updateJumpCount = true;
         penaltyJump = true;
         penlatyJumpElt = penaltyElt;
       }
     }
-    if (updateJumpCount) {
-      remainingJumpCount = 2;
-      synchJumpCount();
+    if (!isShadow) {
+      if (updateJumpCount) {
+        remainingJumpCount = 2;
+        synchJumpCount();
+      }
     }
 
     if (y < FOREGROUND_MAX_Y) {
       if (moveDown) {
-        set(foregroundElt, 'y', y + FOREGROUND_DY);
+        set(monkeyElt, 'y', y + FOREGROUND_DY);
       }
     } else {
-      set(foregroundElt, 'y', FOREGROUND_MAX_Y);
+      set(monkeyElt, 'y', FOREGROUND_MAX_Y);
     }
     if (penaltyJump) {
-      winConfetti();
-      moveUp({ isTrusted: true });
-      if (!score.startsWith('0') && score != LOADING) {
-        score == LOADING;
-        await incrementScore(penlatyJumpElt);
+      if (isShadow) {
+        moveShadowUp();
+      } else {
+        winConfetti();
+        moveUp({ isTrusted: true });
+        if (!score.startsWith('0') && score != LOADING) {
+          score == LOADING;
+          await incrementScore(penlatyJumpElt);
+        }
       }
     }
   }
