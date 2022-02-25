@@ -133,26 +133,26 @@ const initWebServer = async () => {
   const app = express();
 
   app.engine(
-    '.hbs',
-    exphbs.engine({
-      extname: '.hbs',
-      defaultLayout: 'main',
-    })
+      '.hbs',
+      exphbs.engine({
+        extname: '.hbs',
+        defaultLayout: 'main',
+      }),
   );
   app.set('view engine', '.hbs');
 
   app.use(express.static('static-html'));
   app.use(
-    express.urlencoded({
-      limit: '50mb',
-      extended: true,
-    })
+      express.urlencoded({
+        limit: '50mb',
+        extended: true,
+      }),
   );
   app.use(
-    bodyParser.json({
-      limit: '50mb',
-      extended: true,
-    })
+      bodyParser.json({
+        limit: '50mb',
+        extended: true,
+      }),
   );
   app.use((err, req, res, next) => {
     if (err) {
@@ -665,7 +665,7 @@ const setCloseProgramFunction = (fn) => {
 };
 
 const setDataPackCookie = (res, dataPack) => {
-  res.cookie('data_pack', dataPack, { signed: true });
+  res.cookie('data_pack', dataPack, {signed: true});
 };
 
 const getDataPackCookie = (req) => {
@@ -679,7 +679,7 @@ const getDataPackCookie = (req) => {
 };
 
 const setAdminKeyCookie = (res, dataPack) => {
-  res.cookie('admin_key', dataPack, { signed: true });
+  res.cookie('admin_key', dataPack, {signed: true});
 };
 
 const getAdminKeyCookie = (req) => {

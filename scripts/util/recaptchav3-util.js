@@ -134,7 +134,7 @@ const getStatusCountMapArray = () => {
   const array = [];
   const entries = [...statusCountMap.entries()];
   entries.forEach((entry) => {
-    array.push({ status: entry[0], count: entry[1] });
+    array.push({status: entry[0], count: entry[1]});
   });
   return array;
 };

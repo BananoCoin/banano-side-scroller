@@ -1,4 +1,4 @@
-import { clear, addText, addChildElement, displayErrorMessage } from '../lib/util.js';
+import {clear, addText, addChildElement, displayErrorMessage} from '../lib/util.js';
 
 const ZERO = BigInt(0);
 

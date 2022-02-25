@@ -12,7 +12,7 @@
     "npm-check-updates": "npm-check-updates --target minor -u",
     "remove-ds-store": "find . -name '.DS_Store' | xargs rm",
     "preflight": "npm run remove-ds-store && npm update && npm run npm-check-updates && npm i && npm audit fix && npm run eslint && npm run prettier && npm outdated",
-    "prettier": "prettier \"**/**.{ts,js,json,css,scss,html}\" --single-quote --write",
+    "prettier": "prettier \"**/**.{ts,json,css,scss,html}\" --write",
     "start": "node -max-old-space-size=1700 scripts/index.js",
     "screenstart": "screen -dmSL side_scroller npm start;screen -x side_scroller",
     "screenrestart": "npm stop;screen -x side_scroller;screen -dmSL side_scroller npm start;screen -x side_scroller",

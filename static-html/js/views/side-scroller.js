@@ -1,5 +1,5 @@
-import { get, set, clear, addChildSvgElement, displayErrorMessage } from '../lib/util.js';
-import { bmcaptcha } from '../lib/bm-captcha.js';
+import {get, set, clear, addChildSvgElement, displayErrorMessage} from '../lib/util.js';
+import {bmcaptcha} from '../lib/bm-captcha.js';
 
 const LOG_ALL_HREFS = false;
 const BACKGROUND_WIDTH = 700;
@@ -112,12 +112,12 @@ const onLoad = async () => {
   bmcaptcha.init('#side_scroller', captchaClicked);
 
   const svgElt = addChildSvgElement(mainElt, 'svg', {
-    width: BACKGROUND_WIDTH,
-    height: BACKGROUND_HEIGHT,
-    stroke: 'black',
+    'width': BACKGROUND_WIDTH,
+    'height': BACKGROUND_HEIGHT,
+    'stroke': 'black',
     'stroke-width': '2',
-    style: 'background-color:darkgray',
-    id: 'game',
+    'style': 'background-color:darkgray',
+    'id': 'game',
   });
   addChildSvgElement(svgElt, 'image', {
     y: '0',
@@ -405,14 +405,14 @@ const loadBoard = async (groupSvgElt) => {
                 break;
             }
             addChildSvgElement(groupSvgElt, 'image', {
-              y: y,
-              x: x,
-              width: ASSET_SIZE,
-              height: ASSET_SIZE,
-              fill: 'none',
-              stroke: 'none',
-              class: classNm,
-              href: href,
+              'y': y,
+              'x': x,
+              'width': ASSET_SIZE,
+              'height': ASSET_SIZE,
+              'fill': 'none',
+              'stroke': 'none',
+              'class': classNm,
+              'href': href,
               'data-chunk-ix': ix,
               'data-chunk-id': id,
               'data-chunk-col-ix': chunkColumnIx,
@@ -674,7 +674,7 @@ const moveMonkeyDown = async (monkeyClassNm, isShadow) => {
         moveShadowUp();
       } else {
         winConfetti();
-        moveUp({ isTrusted: true });
+        moveUp({isTrusted: true});
         if (!score.startsWith('0') && score != LOADING) {
           score == LOADING;
           await incrementScore(penlatyJumpElt);
@@ -828,7 +828,7 @@ const winConfetti = () => {
   continueConfetti = true;
   const count = 20;
   const defaults = {
-    origin: { y: 0.7 },
+    origin: {y: 0.7},
     shapes: ['square', 'circle', 'emoji:🔥'],
     colors: ['#FFFF00', '#00FF00'],
   };
@@ -839,9 +839,9 @@ const winConfetti = () => {
    */
   function fire(particleRatio, opts) {
     confetti(
-      Object.assign({}, defaults, opts, {
-        particleCount: Math.floor(count * particleRatio),
-      })
+        Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio),
+        }),
     );
   }
 

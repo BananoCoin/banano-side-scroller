@@ -39,15 +39,15 @@ const init = (_config, _loggingUtil) => {
   walletAccountBalanceDescription = 'loading...';
 
   if (!fs.existsSync(config.sessionPayoutDataDir)) {
-    fs.mkdirSync(config.sessionPayoutDataDir, { recursive: true });
+    fs.mkdirSync(config.sessionPayoutDataDir, {recursive: true});
   }
 
   if (!fs.existsSync(config.highScoreDataDir)) {
-    fs.mkdirSync(config.highScoreDataDir, { recursive: true });
+    fs.mkdirSync(config.highScoreDataDir, {recursive: true});
   }
 
   if (!fs.existsSync(config.accountHighScoreDataDir)) {
-    fs.mkdirSync(config.accountHighScoreDataDir, { recursive: true });
+    fs.mkdirSync(config.accountHighScoreDataDir, {recursive: true});
   }
 };
 
@@ -231,7 +231,7 @@ const getAccountHighScores = async () => {
         const score = parseInt(json.score, 10);
         const account = json.account;
         const version = json.version;
-        highScores.push({ date: fileNm, score: score, account: account, version: version });
+        highScores.push({date: fileNm, score: score, account: account, version: version});
       });
     }
   } finally {
@@ -285,7 +285,7 @@ const getHighScores = async () => {
         const file = path.join(config.highScoreDataDir, fileNm);
         const data = fs.readFileSync(file, 'UTF-8');
         const highScore = parseInt(data, 10);
-        highScores.push({ date: fileNm, score: highScore });
+        highScores.push({date: fileNm, score: highScore});
       });
     }
   } finally {
@@ -378,23 +378,7 @@ const payEverybodyAndReopenSession = async () => {
             if (bananoRaw > ZERO) {
               const result = await bananojs.sendBananoWithdrawalFromSeed(seed, seedIx, account, bananoDecimal, representative, previous);
               // add wait so you don't fork block yourself.
-              loggingUtil.log(
-                dateUtil.getDate(),
-                'payment',
-                scoreIx,
-                'of',
-                scores.length,
-                'account',
-                account,
-                'score',
-                score,
-                'bananoDecimal',
-                bananoDecimal,
-                'bananoRaw',
-                bananoRaw,
-                'result',
-                result
-              );
+              loggingUtil.log(dateUtil.getDate(), 'payment', scoreIx, 'of', scores.length, 'account', account, 'score', score, 'bananoDecimal', bananoDecimal, 'bananoRaw', bananoRaw, 'result', result);
               previous = result;
             }
           } catch (error) {

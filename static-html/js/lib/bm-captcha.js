@@ -1,4 +1,4 @@
-import { set } from '../lib/util.js';
+import {set} from '../lib/util.js';
 
 const bmcaptcha = {};
 bmcaptcha.MAX_IMAGES = 6;
@@ -6,7 +6,7 @@ bmcaptcha.captchaClickedCallback = () => {};
 bmcaptcha.secretKey = '';
 bmcaptcha.postJSON = (path, json, success, error) => {
   const xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function () {
+  xhr.onreadystatechange = function() {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 200) {
         if (success) {
@@ -119,4 +119,4 @@ bmcaptcha.showCaptcha = (callback) => {
   bmcaptcha.postJSON('bm-captcha-request', request, callbackWrapper);
 };
 
-export { bmcaptcha };
+export {bmcaptcha};
