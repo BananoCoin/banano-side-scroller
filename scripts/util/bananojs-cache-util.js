@@ -36,7 +36,7 @@ const init = (_config, _loggingUtil, _seed, _entropyList) => {
   accountRegExp = new RegExp(config.accountRegex);
 
   if (!fs.existsSync(config.bananojsCacheDataDir)) {
-    fs.mkdirSync(config.bananojsCacheDataDir, { recursive: true });
+    fs.mkdirSync(config.bananojsCacheDataDir, {recursive: true});
   }
 };
 
@@ -58,9 +58,9 @@ const getAccountFile = (account, ip) => {
   }
 
   const hash = crypto
-    .createHash('sha256')
-    .update(`${account}-${ip}`)
-    .digest('hex');
+      .createHash('sha256')
+      .update(`${account}-${ip}`)
+      .digest('hex');
 
   return path.join(config.bananojsCacheDataDir, hash);
 };
@@ -103,7 +103,7 @@ const saveAccountData = (account, ip, data) => {
 const getAccountData = (account, ip) => {
   const accountFile = getAccountFile(account, ip);
   if (!fs.existsSync(accountFile)) {
-    saveAccountData(account, ip, { account: account, score: '0' });
+    saveAccountData(account, ip, {account: account, score: '0'});
   }
   const data = fs.readFileSync(accountFile, 'UTF-8');
   return JSON.parse(data);
@@ -120,9 +120,9 @@ const getTotalAccountCount = () => {
 const getActiveAccountCount = () => {
   let count = 0;
   if (fs.existsSync(config.bananojsCacheDataDir)) {
-    fs.readdirSync(config.bananojsCacheDataDir).forEach(file => {
+    fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
       const fileNm = path.join(config.bananojsCacheDataDir, file);
-      const { mtimeMs } = fs.statSync(fileNm);
+      const {mtimeMs} = fs.statSync(fileNm);
       const activeTimeMs = mtimeMs;
       const activeTimeCutoffMs = Date.now() - config.activeTimeMs;
       /* istanbul ignore if */
@@ -156,7 +156,7 @@ const getAndClearAllScores = async () => {
   const mutexRelease = await mutex.acquire();
   try {
     if (fs.existsSync(config.bananojsCacheDataDir)) {
-      fs.readdirSync(config.bananojsCacheDataDir).forEach(file => {
+      fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
         const json = JSON.parse(data);
@@ -175,11 +175,11 @@ const getAndClearAllScores = async () => {
   }
   const allScores = [];
   const accounts = [...Object.keys(maxScoreByAccount)];
-  accounts.forEach(account => {
+  accounts.forEach((account) => {
     const score = maxScoreByAccount[account];
     allScores.push({
       account: account,
-      score: score
+      score: score,
     });
   });
   return allScores;
@@ -190,14 +190,14 @@ const getAccountBalances = async () => {
   const mutexRelease = await mutex.acquire();
   try {
     if (fs.existsSync(config.bananojsCacheDataDir)) {
-      fs.readdirSync(config.bananojsCacheDataDir).forEach(file => {
+      fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
         const json = JSON.parse(data);
         const score = json.score;
         const account = json.account;
         if (parseInt(score, 10) !== 0) {
-          accounts.push({ account: account, score: score });
+          accounts.push({account: account, score: score});
         }
       });
     }
@@ -212,7 +212,7 @@ const getHistogram = async () => {
   const mutexRelease = await mutex.acquire();
   try {
     if (fs.existsSync(config.bananojsCacheDataDir)) {
-      fs.readdirSync(config.bananojsCacheDataDir).forEach(file => {
+      fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
         const score = JSON.parse(data).score;
@@ -238,7 +238,7 @@ const getHistogram = async () => {
   for (const [bucket, count] of histogramMap) {
     histogram.push({
       bucket: bucket,
-      count: count
+      count: count,
     });
   }
 

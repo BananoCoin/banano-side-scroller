@@ -119,6 +119,7 @@ const onLoad = async () => {
     'style': 'background-color:darkgray',
     'id': 'game',
   });
+
   addChildSvgElement(svgElt, 'image', {
     y: '0',
     x: '0',
@@ -170,6 +171,7 @@ const onLoad = async () => {
 
   const groupSvgElt = addChildSvgElement(svgElt, 'g');
 
+  // https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element
   addChildSvgElement(svgElt, 'image', {
     y: FOREGROUND_START_Y,
     x: ASSET_SIZE,
@@ -177,8 +179,9 @@ const onLoad = async () => {
     height: ASSET_SIZE,
     fill: 'red',
     stroke: 'none',
-    class: 'foreground',
+    class: 'shadow',
     href: MONKEY_HREF,
+    filter: 'invert(25%)',
   });
 
   addChildSvgElement(svgElt, 'image', {
@@ -188,7 +191,7 @@ const onLoad = async () => {
     height: ASSET_SIZE,
     fill: 'red',
     stroke: 'none',
-    class: 'shadow',
+    class: 'foreground',
     href: MONKEY_HREF,
   });
 
