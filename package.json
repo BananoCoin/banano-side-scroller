@@ -1,6 +1,6 @@
 {
   "name": "side-scroller",
-  "version": "1.2.43",
+  "version": "1.2.44",
   "description": "side-scroller",
   "repository": {
     "type": "git",
@@ -21,13 +21,13 @@
   "author": "Coranos",
   "license": "MIT",
   "dependencies": {
-    "@bananocoin/bananojs": "^2.5.8",
+    "@bananocoin/bananojs": "^2.5.9",
     "await-semaphore": "^0.1.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "express-handlebars": "^6.0.3",
+    "express-handlebars": "^6.0.4",
     "mkdirp": "^1.0.4",
     "png-js": "^1.0.0",
     "socket.io": "^4.4.1",
@@ -36,10 +36,10 @@
   "preferGlobal": true,
   "devDependencies": {
     "chai": "^4.3.6",
-    "eslint": "^8.12.0",
+    "eslint": "^8.13.0",
     "eslint-config-google": "^0.14.0",
     "mocha": "^9.2.2",
-    "npm-check-updates": "^12.5.7",
+    "npm-check-updates": "^12.5.8",
     "nyc": "^15.1.0",
     "prettier": "^2.6.2"
   }
