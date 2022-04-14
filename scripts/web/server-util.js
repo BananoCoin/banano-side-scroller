@@ -33,6 +33,7 @@ let loggingUtil;
 let instance;
 let closeProgramFn;
 const tempDataByAccount = new Map();
+const shadowPathByChunkId = new Map();
 
 // functions
 const init = async (_config, _loggingUtil) => {
@@ -117,6 +118,9 @@ const getTempData = (account, ip) => {
   const accountData = tempDataByAccount.get(account);
   if (!accountData.tempScoreByIp.has(ip)) {
     const ipData = {};
+    ipData.chunk_ix = 0;
+    ipData.prev_col_ix = 0;
+    ipData.shadowPaths = {};
     ipData.score = 0;
     ipData.lastRewardTs = Date.now();
     // loggingUtil.log(dateUtil.getDate(), 'getTempData', 'account', account, 'ip', ip, 'ipData', ipData);
@@ -267,6 +271,25 @@ const initWebServer = async () => {
   });
 
   app.post('/bm-captcha-request', async (req, res) => {
+    const account = req.body.account;
+    const ip = ipUtil.getIp(req);
+    const tempData = getTempData(account, ip);
+
+    // console.log('saving shadow paths', tempData.shadowPaths)
+
+    const ids = Object.keys(tempData.shadowPaths);
+
+    for (let ix = 0; ix < ids.length; ix++) {
+      const id = parseInt(ids[ix], 10);
+      const shadowPath = tempData.shadowPaths[id].slice();
+
+      // console.log('saving shadow paths', 'ix', ix, 'id', id, 'shadowPath', shadowPath)
+
+      shadowPathByChunkId.set(id, shadowPath);
+      // console.log('saving shadowPathByChunkId', shadowPathByChunkId)
+    }
+    tempData.shadowPaths = {};
+
     bmCaptchaUtil.captcha(req, res);
   });
 
@@ -435,6 +458,7 @@ const initWebServer = async () => {
       if (ix > tempData.chunk_ix) {
         tempData.chunk_ix = ix;
         tempData.prev_col_ix = 0;
+        tempData.shadowPaths = {};
       }
 
       if (tempData.chunk_ix != ix) {
@@ -461,6 +485,16 @@ const initWebServer = async () => {
                 // loggingUtil.log('increment_score', 'chunk', chunk);
                 if (chunk[colIx] !== undefined) {
                   const col = chunk[colIx];
+
+                  if (tempData.shadowPaths[id] == undefined) {
+                    tempData.shadowPaths[id] = [];
+                  }
+
+                  tempData.shadowPaths[id].push({
+                    colIx: colIx,
+                    rowIx: rowIx,
+                  });
+
                   // loggingUtil.log('increment_score', 'col', col);
                   const value = col[rowIx];
                   switch (value) {
@@ -594,6 +628,22 @@ const initWebServer = async () => {
       tempData.reward_set = new Set();
 
       data.chunk_ids = tempData.chunk_ids;
+
+      data.shadow_paths = {};
+
+      // console.log('loading shadow paths', 'data.chunk_ids.length', data.chunk_ids.length)
+      // console.log('loading shadowPathByChunkId', shadowPathByChunkId)
+      for (let ix = 0; ix < data.chunk_ids.length; ix++) {
+        const id = parseInt(data.chunk_ids[ix], 10);
+        const path = shadowPathByChunkId.get(id);
+
+        // console.log('loading shadow paths', 'ix', ix, 'id', id, 'path', path)
+
+        data.shadow_paths[id] = path;
+      }
+
+      // console.log('loading shadow paths', data.shadow_paths)
+
       // loggingUtil.log(dateUtil.getDate(), 'board', 'account', account, 'tempData', tempData);
       // loggingUtil.log(dateUtil.getDate(), 'board', 'account', account, 'data.chunk_ids', data.chunk_ids);
     }

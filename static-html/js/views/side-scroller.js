@@ -85,6 +85,7 @@ let sessionClosedCountdown = 0;
 let continueConfetti = false;
 let remainingJumpCount = 2;
 let retryNow = 0;
+let shadowRowAtRemaining = {};
 
 const onLoad = async () => {
   document.addEventListener('keydown', keyDown, false);
@@ -232,6 +233,7 @@ const onLoad = async () => {
             movePenalty();
             await moveForegroundDown();
             await moveShadowDown();
+            await moveShadowAtRemaining();
             await updateScore();
           }
         }
@@ -345,13 +347,13 @@ const loadScore = async () => {
   }
 };
 
-const loadChunkIds = async () => {
+const loadChunkIdsAndShadowPaths = async () => {
   const account = window.localStorage.account;
   const response = await fetch(`/board?account=${account}`, {
     method: 'GET',
   });
   const responseJson = await response.json();
-  return responseJson.chunk_ids;
+  return {chunkIds: responseJson.chunk_ids, shadowPaths: responseJson.shadow_paths};
 };
 
 const loadChunkById = async (id) => {
@@ -369,19 +371,33 @@ const loadBoard = async (groupSvgElt) => {
   boardLoading = true;
   boardLoaded = false;
   clear(groupSvgElt);
-  const chunkIds = await loadChunkIds();
+  const chunkIdsAndShadowPaths = await loadChunkIdsAndShadowPaths();
+  const chunkIds = chunkIdsAndShadowPaths.chunkIds;
+  const shadowPaths = chunkIdsAndShadowPaths.shadowPaths;
   remaining = 0;
+  shadowRowAtRemaining = {};
   let x = 0;
 
   const steps = parseInt(ASSET_SIZE / MOVE_DX, 0);
 
   for (let ix = 0; ix < chunkIds.length; ix++) {
     const id = chunkIds[ix];
+    const shadowRowByCol = {};
+    if (shadowPaths[id] !== undefined) {
+      const shadowPath = shadowPaths[id];
+      for (let shadowPathIx = 0; shadowPathIx < shadowPath.length; shadowPathIx++) {
+        const shadowElt = shadowPath[shadowPathIx];
+        shadowRowByCol[shadowElt.colIx] = shadowElt.rowIx;
+      }
+    }
     const chunk = await loadChunkById(id);
-    remaining += chunk.length * steps;
+    // console.log('shadowPath', id, shadowPath);
 
     for (let chunkColumnIx = 0; chunkColumnIx < chunk.length; chunkColumnIx++) {
       const chunkColumn = chunk[chunkColumnIx];
+      if (shadowRowByCol[chunkColumnIx] != undefined) {
+        shadowRowAtRemaining[remaining] = shadowRowByCol[chunkColumnIx];
+      }
       let y = OBSTACLE_MAX_Y;
       for (let chunkRowIx = 0; chunkRowIx < chunkColumn.length; chunkRowIx++) {
         const assetId = chunkColumn[chunkRowIx];
@@ -428,6 +444,7 @@ const loadBoard = async (groupSvgElt) => {
         y -= ASSET_SIZE;
       }
       x += ASSET_SIZE;
+      remaining += steps;
     }
   }
   boardLoaded = true;
@@ -475,6 +492,15 @@ const moveForeground = (x, y) => {
 
 const moveShadow = (x, y) => {
   moveMonkey(x, y, 'shadow', true);
+};
+
+const moveShadowAtRemaining = () => {
+  if (shadowRowAtRemaining[remaining] !== undefined) {
+    const rowIx = shadowRowAtRemaining[remaining];
+    const offset = rowIx*(-MOVE_X);
+    // console.log('moveShadowAtRemaining', 'remaining', remaining, 'rowIx', rowIx, 'offset', offset)
+    moveShadow(0, offset);
+  }
 };
 
 const moveShadowUp = () => {
@@ -763,14 +789,14 @@ const captchaClicked = (response) => {
   // console.log('captchaClicked', response);
   if (!response.success) {
     const actualSelector = '#bm_captcha_image_' + response.actual;
-    console.log('showCaptcha', 'actual selector', actualSelector);
+    // console.log('showCaptcha', 'actual selector', actualSelector);
     const actualImageElt = document.querySelector(actualSelector);
     if (actualImageElt != null) {
       actualImageElt.setAttribute('class', 'red_striped_background');
     }
 
     const expectedSelector = '#bm_captcha_image_' + response.expected;
-    console.log('showCaptcha', 'expected selector', expectedSelector);
+    // console.log('showCaptcha', 'expected selector', expectedSelector);
     const expectedImageElt = document.querySelector(expectedSelector);
     if (expectedImageElt != null) {
       expectedImageElt.setAttribute('class', 'green_background');

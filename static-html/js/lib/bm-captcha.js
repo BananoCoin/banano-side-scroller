@@ -116,6 +116,7 @@ bmcaptcha.showCaptcha = (callback) => {
   };
   const request = {};
   request.secretKey = bmcaptcha.secretKey;
+  request.account = window.localStorage.account;
   bmcaptcha.postJSON('bm-captcha-request', request, callbackWrapper);
 };
 
