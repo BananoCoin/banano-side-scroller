@@ -21,7 +21,7 @@
   "author": "Coranos",
   "license": "MIT",
   "dependencies": {
-    "@bananocoin/bananojs": "^2.5.10",
+    "@bananocoin/bananojs": "^2.5.11",
     "await-semaphore": "^0.1.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
