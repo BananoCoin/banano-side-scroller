@@ -7,6 +7,7 @@ html {
 }
 
 body {
+  background-color: #4CBF4B;
 }
 
 footer {
@@ -53,8 +54,13 @@ a:hover {
 }
 
 .arrow_button {
+  border: 3px solid #2A2A2E;
+  padding-bottom: 12px;
   width: 180px;
   height: 60px;
+  background-color: #FBDD11;
+  color: #212124;
+  border-radius: 10px;
 }
 
 .t_left {
@@ -234,4 +240,76 @@ a:hover {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.firstrow {
+  width: 100%;
+  background-color: #FBDD11;
+  padding: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border: 3px solid #212124;
+  border-radius: 0px;
+  border-bottom: 0px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+}
+
+.secondrow {
+  background-color: #FBDD11;
+  padding: 5px;
+  padding-bottom: 14px;
+  border: 3px solid #212124;
+  border-radius: 0px;
+  border-top: 0px solid #FBDD11;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+}
+
+.thirdrow {
+  border: 3px solid #212124;
+  background-color: #2A2A2E;
+  border-radius: 10px;
+}
+
+.fourthrow {
+
+}
+
+#data_packs {
+  float: right;
+  background-color: #2A2A2E;
+  color:#FBDD11;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.scoreboard {
+  float: left;
+  background-color: #2A2A2E;
+  color:#FBDD11;
+  padding: 7px;
+  padding-block: 7px;
+  border-radius: 10px;
+}
+
+#score {
+  padding-top: 8px;
+  background-color: #FBDD11;
+  float:left;
+}
+
+#session {
+  padding-top: 8px;
+  float: right;
+}
+
+#account {
+  background-color: #2A2A2E;
+  color:#99e597;
+  padding: 4px;
+  padding-inline: 10px;
+  border-radius: 10px;
 }
