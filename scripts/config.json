@@ -130,6 +130,17 @@
   "walletRepresentative": "",
   "maxPendingBananos": 10,
   "pngChunkDir": "chunks",
+  "abstract": {
+    "dir": "abstract-sprite-sheets",
+    "spriteSheets": [
+      { "name": "eyes", "dx": 0.5, "dy": 0.4, "align": "center" },
+      { "name": "hat", "dx": 0.5, "dy": 0.0, "align": "bottom" },
+      { "name": "head", "dx": 0.5, "dy": 0.4, "align": "center" },
+      { "name": "hand-item", "dx": 0.2, "dy": 0.85, "align": "center" },
+      { "name": "body", "dx": 0.5, "dy": 0.9, "align": "top" },
+      { "name": "tail", "dx": 0.8, "dy": 0.8, "align": "center" }
+    ]
+  },
   "chunkTestPattern": false,
   "accountRegex": "^ban_[13456789abcdefghijkmnopqrstuwxyz]{0,64}$",
   "blockExplorerAccountPrefix": "https://yellowspyglass.com/account/",

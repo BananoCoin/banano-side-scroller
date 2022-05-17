@@ -7,10 +7,6 @@ const dateUtil = require('./date-util.js');
 const httpsUtil = require('./https-util.js');
 
 // constants
-const MIN_ANSWERS = 1;
-const MAX_ANSWERS = 100;
-const VALID_ANSWERS = [1, 2, 3, 4, 5, 6];
-const answers = [];
 const registeredSites = new Map();
 
 // variables
@@ -30,8 +26,8 @@ const init = (_config, _loggingUtil) => {
   config = _config;
   loggingUtil = _loggingUtil;
 
-  setImmediate(updateAnswers);
-  setInterval(updateAnswers, 60000);
+  // setImmediate(updateAnswers);
+  // setInterval(updateAnswers, 60000);
 };
 
 const deactivate = () => {
@@ -53,6 +49,7 @@ const register = async (req, res) => {
 
 const verify = async (req, res, callback) => {
   const secretKey = req.body.secretKey;
+  const account = req.body.account;
   const actualAnswer = parseInt(req.body.answer, 10);
   const response = {};
   response.success = false;
@@ -61,36 +58,32 @@ const verify = async (req, res, callback) => {
     const site = registeredSites.get(secretKey);
     if (site.answer) {
       const expectedAnswer = parseInt(site.answer.answer, 10);
-      if (VALID_ANSWERS.includes(expectedAnswer) && VALID_ANSWERS.includes(actualAnswer)) {
-        response.actual = actualAnswer;
-        response.expected = expectedAnswer;
-        response.success = expectedAnswer == actualAnswer;
-        response.message = site.answer.answerDetail;
-      } else {
-        loggingUtil.log('bmcaptcha', 'verify', 'expectedAnswer', expectedAnswer, 'actualAnswer', actualAnswer, VALID_ANSWERS, VALID_ANSWERS);
-      }
+      response.actual = actualAnswer;
+      response.expected = expectedAnswer;
+      response.success = expectedAnswer == actualAnswer;
+      response.message = site.answer.answerDetail;
     }
     delete site.answer;
   }
-  callback(req.body.account, response.success);
+  callback(account, response.success);
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(response));
 };
 
 const captcha = async (req, res) => {
   const secretKey = req.body.secretKey;
+  const account = req.body.account;
   const response = {};
   response.success = false;
   response.images = [];
+  // console.log('secretKey', secretKey);
+  // console.log('account', account);
   if (registeredSites.has(secretKey)) {
     const site = registeredSites.get(secretKey);
-    if (answers.length == 0) {
-      await updateAnswers();
-    }
-
-    const ix = randomUtil.getRandomInt(0, answers.length);
-    site.answer = answers[ix];
-    answers.splice(ix, 1);
+    const url = config.blackMonkeyDataUrl + `?account=${account}`;
+    const answer = await httpsUtil.sendRequest(url, 'GET');
+    site.answer = answer;
+    // console.log('answer', answer);
 
     if (site.answer) {
       response.success = true;
@@ -103,22 +96,6 @@ const captcha = async (req, res) => {
   }
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(response));
-};
-
-const updateAnswers = async () => {
-  const blackMonkeyDataUrl = config.blackMonkeyDataUrl;
-  let requestedAlready = false;
-  while (answers.length < MIN_ANSWERS) {
-    const answer = await httpsUtil.sendRequest(blackMonkeyDataUrl, 'GET');
-    answers.push(answer);
-    requestedAlready = true;
-  }
-  if (!requestedAlready) {
-    if (answers.length < MAX_ANSWERS) {
-      const answer = await httpsUtil.sendRequest(blackMonkeyDataUrl, 'GET');
-      answers.push(answer);
-    }
-  }
 };
 
 exports.init = init;

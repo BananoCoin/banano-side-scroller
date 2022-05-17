@@ -16,6 +16,7 @@ const randomUtil = require('../util/random-util.js');
 const dateUtil = require('../util/date-util.js');
 const ipUtil = require('../util/ip-util.js');
 const bmCaptchaUtil = require('../util/bm-captcha-util.js');
+const abstractApiUtil = require('../util/abstract-api-util.js');
 const recaptchav3Util = require('../util/recaptchav3-util.js');
 const bananojsCacheUtil = require('../util/bananojs-cache-util.js');
 const paymentUtil = require('../util/payment-util.js');
@@ -122,6 +123,8 @@ const getTempData = (account, ip) => {
     ipData.prev_col_ix = 0;
     ipData.shadowPaths = {};
     ipData.score = 0;
+    ipData.difficulty = 0;
+    ipData.numberOfMonkeys = 0;
     ipData.lastRewardTs = Date.now();
     // loggingUtil.log(dateUtil.getDate(), 'getTempData', 'account', account, 'ip', ip, 'ipData', ipData);
     accountData.tempScoreByIp.set(ip, ipData);
@@ -241,6 +244,17 @@ const initWebServer = async () => {
     res.render('side-scroller', data);
   });
 
+  app.get('/abstract/api', async (req, res) => {
+    const account = req.query.account;
+    if (account === undefined) {
+      res.end(JSON.stringify({error: 'account parameter required'}));
+      return;
+    }
+    const ip = ipUtil.getIp(req);
+    const tempData = getTempData(account, ip);
+    abstractApiUtil.api(req, res, tempData);
+  });
+
   app.get('/bm-captcha-register', async (req, res) => {
     bmCaptchaUtil.register(req, res);
   });
@@ -263,6 +277,7 @@ const initWebServer = async () => {
         if (!sessionClosedFlag) {
           const halfScore = parseInt(tempData.score / 2, 0);
           await bananojsCacheUtil.incrementScore(account, ip, -halfScore);
+          abstractApiUtil.resetApi(tempData);
         }
       }
       tempData.score = 0;

@@ -2,7 +2,7 @@
 // libraries
 const fs = require('fs');
 const path = require('path');
-const Png = require('png-js');
+const PNG = require('pngjs').PNG;
 
 // modules
 const dateUtil = require('./date-util.js');
@@ -29,16 +29,7 @@ const init = async (_config, _loggingUtil) => {
 };
 
 const decode = (data) => {
-  return new Promise((resolve) => {
-    const png = new Png(data);
-    png.decode((pixels) => {
-      resolve({
-        width: png.width,
-        height: png.height,
-        pixels: Uint8Array.from(pixels),
-      });
-    });
-  });
+  return PNG.sync.read(data);
 };
 
 const loadPngChunks = async () => {
@@ -50,8 +41,8 @@ const loadPngChunks = async () => {
       if (fileNm.endsWith('.png')) {
         const file = path.join(config.pngChunkDir, fileNm);
         const data = fs.readFileSync(file);
-        const decodedData = await decode(data);
-        const pixels = decodedData.pixels;
+        const decodedData = decode(data);
+        const pixels = decodedData.data;
         const indexes = [];
 
         // loggingUtil.log(dateUtil.getDate(), 'loadPngChunks', 'file', fileNm, 'decodedData', decodedData, 'pixels', pixels);

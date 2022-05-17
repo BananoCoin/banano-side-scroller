@@ -24,52 +24,17 @@ bmcaptcha.postJSON = (path, json, success, error) => {
   xhr.send(JSON.stringify(json));
 };
 
-bmcaptcha.init = (id, captchaClickedCallback) => {
+bmcaptcha.init = (id, captchaClickedCallback, registerCallbackCallback) => {
   const registerCallback = (json) => {
+    // console.log('registerCallback', json);
     bmcaptcha.secretKey = json.secretKey;
+    bmcaptcha.id = id;
+    if (registerCallbackCallback !== undefined) {
+      registerCallbackCallback();
+    }
   };
-  bmcaptcha.postJSON('bm-captcha-register', {}, registerCallback);
-
   bmcaptcha.captchaClickedCallback = captchaClickedCallback;
-  const addText = (parent, childText) => {
-    parent.appendChild(document.createTextNode(childText));
-  };
-  const addAttributes = (child, attributes) => {
-    if (attributes) {
-      Object.keys(attributes).forEach((attibute) => {
-        const value = attributes[attibute];
-        set(child, attibute, value);
-      });
-    }
-  };
-  const addChildElement = (parent, childType, attributes) => {
-    const child = document.createElement(childType);
-    parent.appendChild(child);
-    addAttributes(child, attributes);
-    return child;
-  };
-
-  const mainElt = document.querySelector('#side_scroller');
-  const captchaElt = addChildElement(mainElt, 'div', {
-    style: 'display:none',
-    id: 'bm_captcha',
-  });
-  addText(captchaElt, 'Captcha');
-  addChildElement(captchaElt, 'br');
-  const captchaAnchorElt = addChildElement(captchaElt, 'a', {
-    onclick: 'bmcaptcha.captchaClicked(event)',
-  });
-  for (let imageIx = 1; imageIx <= bmcaptcha.MAX_IMAGES; imageIx++) {
-    addChildElement(captchaAnchorElt, 'img', {
-      id: 'bm_captcha_image_' + imageIx,
-      data_answer: imageIx,
-      ismap: 'ismap',
-      style: 'width:150px;',
-    });
-    if (imageIx == 3) {
-      addChildElement(captchaAnchorElt, 'br');
-    }
-  }
+  bmcaptcha.postJSON('/bm-captcha-register', {}, registerCallback);
 };
 
 bmcaptcha.captchaClicked = (event) => {
@@ -87,7 +52,7 @@ bmcaptcha.captchaClicked = (event) => {
     bmcaptcha.captchaClickedCallback(response);
   };
 
-  bmcaptcha.postJSON('bm-captcha-verify', request, callbackWrapper);
+  bmcaptcha.postJSON('/bm-captcha-verify', request, callbackWrapper);
 };
 
 bmcaptcha.hideCaptcha = () => {
@@ -98,9 +63,51 @@ bmcaptcha.hideCaptcha = () => {
 bmcaptcha.showCaptcha = (callback) => {
   const callbackWrapper = (json) => {
     // console.log('showCaptcha', json);
-    const captchaElt = document.querySelector('#bm_captcha');
-    captchaElt.setAttribute('style', 'display:block');
     const keys = [...Object.keys(json.images.monkeys)];
+
+    const addText = (parent, childText) => {
+      parent.appendChild(document.createTextNode(childText));
+    };
+    const addAttributes = (child, attributes) => {
+      if (attributes) {
+        Object.keys(attributes).forEach((attibute) => {
+          const value = attributes[attibute];
+          set(child, attibute, value);
+        });
+      }
+    };
+    const addChildElement = (parent, childType, attributes) => {
+      const child = document.createElement(childType);
+      parent.appendChild(child);
+      addAttributes(child, attributes);
+      return child;
+    };
+
+    const mainElt = document.querySelector(bmcaptcha.id);
+    mainElt.innerHTML = '';
+    const captchaElt = addChildElement(mainElt, 'div', {
+      style: 'display:none',
+      id: 'bm_captcha',
+    });
+    addText(captchaElt, 'Captcha');
+    addChildElement(captchaElt, 'br');
+    const captchaAnchorElt = addChildElement(captchaElt, 'a', {
+      onclick: 'bmcaptcha.captchaClicked(event)',
+    });
+    for (let imageIx = 1; imageIx <= keys.length; imageIx++) {
+      const id = 'bm_captcha_image_' + imageIx;
+      // console.log('init id', id);
+      addChildElement(captchaAnchorElt, 'img', {
+        id: id,
+        data_answer: imageIx,
+        ismap: 'ismap',
+        style: 'width:150px;',
+      });
+      if (imageIx == 3) {
+        addChildElement(captchaAnchorElt, 'br');
+      }
+    }
+    captchaElt.setAttribute('style', 'display:block');
     // console.log('showCaptcha', 'keys', keys);
     keys.forEach((imageIx) => {
       const selector = '#bm_captcha_image_' + imageIx;
@@ -112,12 +119,15 @@ bmcaptcha.showCaptcha = (callback) => {
       captchaImageElt.setAttribute('src', data);
       captchaImageElt.setAttribute('class', 'white_background');
     });
-    callback(json);
+    if (callback !== undefined) {
+      callback(json);
+    }
   };
   const request = {};
   request.secretKey = bmcaptcha.secretKey;
   request.account = window.localStorage.account;
-  bmcaptcha.postJSON('bm-captcha-request', request, callbackWrapper);
+  // console.log('showCaptcha', 'request', request);
+  bmcaptcha.postJSON('/bm-captcha-request', request, callbackWrapper);
 };
 
 export {bmcaptcha};

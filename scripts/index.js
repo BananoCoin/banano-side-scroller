@@ -11,6 +11,7 @@ const httpsUtil = require('./util/https-util.js');
 const webServerUtil = require('./web/server-util.js');
 const paymentUtil = require('./util/payment-util.js');
 const chunkUtil = require('./util/chunk-util.js');
+const abstractApiUtil = require('./util/abstract-api-util.js');
 
 // constants
 const config = require('./config.json');
@@ -41,6 +42,7 @@ const init = async () => {
   modules.push(httpsUtil);
   modules.push(webServerUtil);
   modules.push(paymentUtil);
+  modules.push(abstractApiUtil);
 
   for (let moduleIx = 0; moduleIx < modules.length; moduleIx++) {
     const item = modules[moduleIx];
