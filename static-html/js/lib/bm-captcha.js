@@ -62,7 +62,7 @@ bmcaptcha.hideCaptcha = () => {
 
 bmcaptcha.showCaptcha = (callback) => {
   const callbackWrapper = (json) => {
-    // console.log('showCaptcha', json);
+    console.log('showCaptcha', json);
     const keys = [...Object.keys(json.images.monkeys)];
 
     const addText = (parent, childText) => {

@@ -3,7 +3,6 @@ import {bmcaptcha} from '../../js/lib/bm-captcha.js';
 window.bmcaptcha = bmcaptcha;
 
 window.onLoad = () => {
-  window.localStorage.account = 'demo';
   const showCaptcha = () => {
     bmcaptcha.showCaptcha();
   };
