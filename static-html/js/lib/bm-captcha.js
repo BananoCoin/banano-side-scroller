@@ -60,69 +60,74 @@ bmcaptcha.hideCaptcha = () => {
   captchaElt.setAttribute('style', 'display:none');
 };
 
+bmcaptcha.showMonkeys = (id, json) => {
+  // console.log('showMonkeys', 'id', id);
+  // console.log('showMonkeys', 'json', json);
+  const keys = [...Object.keys(json.images.monkeys)];
+
+  const addText = (parent, childText) => {
+    parent.appendChild(document.createTextNode(childText));
+  };
+  const addAttributes = (child, attributes) => {
+    if (attributes) {
+      Object.keys(attributes).forEach((attibute) => {
+        const value = attributes[attibute];
+        set(child, attibute, value);
+      });
+    }
+  };
+  const addChildElement = (parent, childType, attributes) => {
+    const child = document.createElement(childType);
+    parent.appendChild(child);
+    addAttributes(child, attributes);
+    return child;
+  };
+  const mainElt = document.querySelector(id);
+
+  if (document.getElementById('bm_captcha') === null) {
+    addChildElement(mainElt, 'div', {
+      style: 'display:none',
+      id: 'bm_captcha',
+    });
+  }
+  const captchaElt = document.getElementById('bm_captcha');
+  captchaElt.innerHTML = '';
+  addText(captchaElt, 'Captcha');
+  addChildElement(captchaElt, 'br');
+  const captchaAnchorElt = addChildElement(captchaElt, 'a', {
+    onclick: 'bmcaptcha.captchaClicked(event)',
+  });
+  for (let imageIx = 1; imageIx <= keys.length; imageIx++) {
+    const id = 'bm_captcha_image_' + imageIx;
+    // console.log('init id', id);
+    addChildElement(captchaAnchorElt, 'img', {
+      id: id,
+      data_answer: imageIx,
+      ismap: 'ismap',
+      style: 'width:150px;',
+    });
+    if (imageIx == 3) {
+      addChildElement(captchaAnchorElt, 'br');
+    }
+  }
+  captchaElt.setAttribute('style', 'display:block');
+  // console.log('showCaptcha', 'keys', keys);
+  keys.forEach((imageIx) => {
+    const selector = '#bm_captcha_image_' + imageIx;
+    // console.log('showCaptcha', 'selector', selector);
+    const captchaImageElt = document.querySelector(selector);
+    // console.log('showCaptcha', 'captchaImageElt', captchaImageElt);
+    const data = json.images.monkeys[imageIx];
+    // console.log('showCaptcha', 'data', data);
+    captchaImageElt.setAttribute('src', data);
+    captchaImageElt.setAttribute('class', 'white_background');
+  });
+};
+
 bmcaptcha.showCaptcha = (callback) => {
   const callbackWrapper = (json) => {
-    console.log('showCaptcha', json);
-    const keys = [...Object.keys(json.images.monkeys)];
+    bmcaptcha.showMonkeys(bmcaptcha.id, json);
 
-    const addText = (parent, childText) => {
-      parent.appendChild(document.createTextNode(childText));
-    };
-    const addAttributes = (child, attributes) => {
-      if (attributes) {
-        Object.keys(attributes).forEach((attibute) => {
-          const value = attributes[attibute];
-          set(child, attibute, value);
-        });
-      }
-    };
-    const addChildElement = (parent, childType, attributes) => {
-      const child = document.createElement(childType);
-      parent.appendChild(child);
-      addAttributes(child, attributes);
-      return child;
-    };
-
-    const mainElt = document.querySelector(bmcaptcha.id);
-
-    if (document.getElementById('bm_captcha') === null) {
-      addChildElement(mainElt, 'div', {
-        style: 'display:none',
-        id: 'bm_captcha',
-      });
-    }
-    const captchaElt = document.getElementById('bm_captcha');
-    captchaElt.innerHTML = '';
-    addText(captchaElt, 'Captcha');
-    addChildElement(captchaElt, 'br');
-    const captchaAnchorElt = addChildElement(captchaElt, 'a', {
-      onclick: 'bmcaptcha.captchaClicked(event)',
-    });
-    for (let imageIx = 1; imageIx <= keys.length; imageIx++) {
-      const id = 'bm_captcha_image_' + imageIx;
-      // console.log('init id', id);
-      addChildElement(captchaAnchorElt, 'img', {
-        id: id,
-        data_answer: imageIx,
-        ismap: 'ismap',
-        style: 'width:150px;',
-      });
-      if (imageIx == 3) {
-        addChildElement(captchaAnchorElt, 'br');
-      }
-    }
-    captchaElt.setAttribute('style', 'display:block');
-    // console.log('showCaptcha', 'keys', keys);
-    keys.forEach((imageIx) => {
-      const selector = '#bm_captcha_image_' + imageIx;
-      // console.log('showCaptcha', 'selector', selector);
-      const captchaImageElt = document.querySelector(selector);
-      // console.log('showCaptcha', 'captchaImageElt', captchaImageElt);
-      const data = json.images.monkeys[imageIx];
-      // console.log('showCaptcha', 'data', data);
-      captchaImageElt.setAttribute('src', data);
-      captchaImageElt.setAttribute('class', 'white_background');
-    });
     if (callback !== undefined) {
       callback(json);
     }

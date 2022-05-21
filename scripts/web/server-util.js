@@ -244,6 +244,19 @@ const initWebServer = async () => {
     res.render('side-scroller', data);
   });
 
+
+  app.get('/abstract/reset', async (req, res) => {
+    const account = req.query.account;
+    if (account === undefined) {
+      res.end(JSON.stringify({error: 'account parameter required'}));
+      return;
+    }
+    const ip = ipUtil.getIp(req);
+    const tempData = getTempData(account, ip);
+    await abstractApiUtil.resetApi(tempData);
+    await abstractApiUtil.api(req, res, tempData);
+  });
+
   app.get('/abstract/api', async (req, res) => {
     const account = req.query.account;
     if (account === undefined) {
@@ -252,7 +265,7 @@ const initWebServer = async () => {
     }
     const ip = ipUtil.getIp(req);
     const tempData = getTempData(account, ip);
-    abstractApiUtil.api(req, res, tempData);
+    await abstractApiUtil.api(req, res, tempData);
   });
 
   app.get('/bm-captcha-register', async (req, res) => {

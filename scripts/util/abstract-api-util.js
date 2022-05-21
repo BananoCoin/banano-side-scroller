@@ -309,8 +309,8 @@ const parseSpriteSheetPng = (png) => {
 
 const api = async (req, res, tempData) => {
   const numberOfMonkeys = getValueAndNormalize(tempData, 'numberOfMonkeys', true);
-  const maxNumberOfMonkeys = Math.floor((numberOfMonkeys-1)/2);
-  const difficulty = getValueAndNormalize(tempData, 'difficulty', false, maxNumberOfMonkeys);
+  const maxDifficulty = Math.floor((numberOfMonkeys-1)/2);
+  const difficulty = getValueAndNormalize(tempData, 'difficulty', false, maxDifficulty);
   const spriteSheets = config.abstract.spriteSheets;
   const keySpriteSheetName = randomUtil.getRandomArrayElt(spriteSheets).name;
 
@@ -331,9 +331,19 @@ const api = async (req, res, tempData) => {
   const nonKeySpriteCount = difficulty;
   // console.log('nonKeySpriteCount',nonKeySpriteCount);
 
+
+  let maxNumberOfMonkeys;
+
   const spriteSheetsSubset = [];
   for (let spriteSheetIx = 0; spriteSheetIx < spriteSheets.length; spriteSheetIx++) {
     const spriteSheet = spriteSheets[spriteSheetIx];
+
+    if (maxNumberOfMonkeys === undefined) {
+      maxNumberOfMonkeys = spriteSheet.sprites.length;
+    } else {
+      maxNumberOfMonkeys = Math.min(maxNumberOfMonkeys, spriteSheet.sprites.length);
+    }
+
     const spriteSheetSubset = {};
     const keys = [...Object.keys(spriteSheet)];
     for (let keyIx = 0; keyIx < keys.length; keyIx++) {
@@ -350,9 +360,9 @@ const api = async (req, res, tempData) => {
     spriteSheetsSubset.push(spriteSheetSubset);
   }
 
-  const rightMonkey = ((numberOfMonkeys-1)/2);
+  const rightMonkeyIx = ((numberOfMonkeys-1)/2);
 
-  const monkeys = {};
+  const monkeyArray = [];
 
   for (let monkeyIx = 0; monkeyIx < numberOfMonkeys; monkeyIx++) {
     const sprites = [];
@@ -386,21 +396,48 @@ const api = async (req, res, tempData) => {
       ctx.translate(+dx, +dy);
     }
     const buffer = canvas.toBuffer('image/png', {compressionLevel: 3, filters: canvas.PNG_FILTER_NONE}).toString('base64');
-    monkeys[(monkeyIx+1).toString()] = `data:image/png;charset=utf-8;base64,${buffer}`;
+
+    const rightMonkey = rightMonkeyIx == monkeyIx;
+    monkeyArray[monkeyIx] = {
+      rightMonkey: rightMonkey,
+      data: `data:image/png;charset=utf-8;base64,${buffer}`,
+    };
   }
 
   // set up for next call.
-  if (difficulty < maxNumberOfMonkeys) {
+  if (difficulty < maxDifficulty) {
     tempData.difficulty = difficulty + 1;
   } else {
-    tempData.difficulty = 1;
-    tempData.numberOfMonkeys = numberOfMonkeys + 2;
+    if (numberOfMonkeys + 2 <= maxNumberOfMonkeys) {
+      tempData.difficulty = 1;
+      tempData.numberOfMonkeys = numberOfMonkeys + 2;
+    } else {
+      tempData.difficulty = 1;
+      tempData.numberOfMonkeys = numberOfMonkeys;
+    }
+  }
+
+  randomUtil.shuffle(monkeyArray);
+
+  const monkeys = {};
+  let answer;
+  for (let monkeyIx = 0; monkeyIx < monkeyArray.length; monkeyIx++) {
+    const monkeyElt = monkeyArray[monkeyIx];
+    const monkeyId = (monkeyIx+1).toString();
+    monkeys[monkeyId] = monkeyElt.data;
+    if (monkeyElt.rightMonkey) {
+      answer = monkeyId;
+    }
   }
 
 
   const response = {
     monkeys: monkeys,
-    answer: (rightMonkey+1).toString(),
+    answer: answer,
+    difficulty: difficulty,
+    numberOfMonkeys: numberOfMonkeys,
+    maxDifficulty: maxDifficulty,
+    maxNumberOfMonkeys: maxNumberOfMonkeys,
   };
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(response));

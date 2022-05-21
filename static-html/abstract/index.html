@@ -13,33 +13,13 @@
     <table class="w100pct">
       <tr>
         <td class="w100pct border_black align_top">
-          <div id="generateMonkeys" class="border_black display_none">
-            <h2>Generate New Match</h2>
-            <form>
-              <p>
-                Number of Monkeys: Min 3, Max <span id="maxMonkeyCount"></span>, Must be an odd number.<br />
-                <input id="numberOfMonkeys" value="3" step="2" type="number" class="border_black" min="3" />
-              </p>
-              <p>
-                Difficullty: Min 1, Max <span id="maxDifficulty"></span>, ((Number of Monkeys -1)/ 2)<br />
-                <input id="difficulty" value="1" type="number" class="border_black" min="1" />
-              </p>
-              <button onclick="generateNewMonkeys();return false;">Generate New Monkeys</button>
-            </form>
-          </div>
-          <div id="generatedMonkeys" class="border_black display_none"></div>
-          <div id="toggleSpriteList" style="clear: both" class="border_black display_none">
-            <h2>Hide/Show Sprite List</h2>
-            <form>
-              <button onclick="toggleHideShowSpriteList();return false;">Hide/Show Sprite List</button>
-            </form>
-          </div>
-          <div id="spriteList" class="border_black display_none"></div>
+          Number of Monkeys <span id="numberOfMonkeys" class="border_black"></span> Max Number of Monkeys <span id="maxNumberOfMonkeys" class="border_black"></span> Difficulty
+          <span id="difficulty" class="border_black"></span> Max Difficulty <span id="maxDifficulty" class="border_black"></span>
+          <hr />
+          <div id="demo" class="border_black"></div>
         </td>
       </tr>
     </table>
-    <script src="zlib.js"></script>
-    <script src="png.js"></script>
-    <script src="main.js"></script>
+    <script type="module" src="index.js"></script>
   </body>
 </html>
