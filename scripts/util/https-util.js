@@ -87,6 +87,7 @@ const sendRequest = async (url, method, formData, formDataType) => {
     }
 
     const req = protocol.request(apiUrl, options, (res) => {
+      // loggingUtil.log(`apiUrl: ${apiUrl}`);
       // loggingUtil.log(`statusCode: ${res.statusCode}`);
       let chunks = '';
       res.on('data', (chunk) => {
@@ -97,6 +98,10 @@ const sendRequest = async (url, method, formData, formDataType) => {
         if (chunks.length == 0) {
           resolve(undefined);
         } else {
+          if (res.statusCode != 200) {
+            loggingUtil.log('protocol.request statusCode', res.statusCode, chunks);
+            resolve({});
+          }
           try {
             const json = JSON.parse(chunks);
             resolve(json);

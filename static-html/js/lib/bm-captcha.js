@@ -84,11 +84,15 @@ bmcaptcha.showCaptcha = (callback) => {
     };
 
     const mainElt = document.querySelector(bmcaptcha.id);
-    mainElt.innerHTML = '';
-    const captchaElt = addChildElement(mainElt, 'div', {
-      style: 'display:none',
-      id: 'bm_captcha',
-    });
+
+    if (document.getElementById('bm_captcha') === null) {
+      addChildElement(mainElt, 'div', {
+        style: 'display:none',
+        id: 'bm_captcha',
+      });
+    }
+    const captchaElt = document.getElementById('bm_captcha');
+    captchaElt.innerHTML = '';
     addText(captchaElt, 'Captcha');
     addChildElement(captchaElt, 'br');
     const captchaAnchorElt = addChildElement(captchaElt, 'a', {

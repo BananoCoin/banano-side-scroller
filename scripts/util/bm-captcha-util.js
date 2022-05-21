@@ -80,7 +80,13 @@ const captcha = async (req, res) => {
   // console.log('account', account);
   if (registeredSites.has(secretKey)) {
     const site = registeredSites.get(secretKey);
-    const url = config.blackMonkeyDataUrl + `?account=${account}`;
+    let url = config.blackMonkeyDataUrl;
+    if (url.includes('?')) {
+      url += '&';
+    } else {
+      url += '?';
+    }
+    url += `account=${account}`;
     const answer = await httpsUtil.sendRequest(url, 'GET');
     site.answer = answer;
     // console.log('answer', answer);
