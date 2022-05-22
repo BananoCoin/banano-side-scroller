@@ -438,6 +438,7 @@ const api = async (req, res, tempData) => {
     numberOfMonkeys: numberOfMonkeys,
     maxDifficulty: maxDifficulty,
     maxNumberOfMonkeys: maxNumberOfMonkeys,
+    keySpriteSheetName: keySpriteSheetName,
   };
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(response));
