@@ -31,6 +31,7 @@ window.loadCaptcha = async (url) => {
     document.getElementById('maxNumberOfMonkeys').innerText = apiJson.maxNumberOfMonkeys;
     document.getElementById('keySpriteSheetName').innerText = apiJson.keySpriteSheetName;
     document.getElementById('answer').innerText = apiJson.answer;
+    document.getElementById('weakestSpriteSheetName').innerText = apiJson.weakestSpriteSheetName;
 
     bmcaptcha.showMonkeys(id, {images: apiJson});
   } else {

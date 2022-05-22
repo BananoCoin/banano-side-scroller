@@ -333,6 +333,7 @@ const api = async (req, res, tempData) => {
 
 
   let maxNumberOfMonkeys;
+  let weakestSpriteSheetName;
 
   const spriteSheetsSubset = [];
   for (let spriteSheetIx = 0; spriteSheetIx < spriteSheets.length; spriteSheetIx++) {
@@ -340,8 +341,12 @@ const api = async (req, res, tempData) => {
 
     if (maxNumberOfMonkeys === undefined) {
       maxNumberOfMonkeys = spriteSheet.sprites.length;
+      weakestSpriteSheetName = spriteSheet.name;
     } else {
-      maxNumberOfMonkeys = Math.min(maxNumberOfMonkeys, spriteSheet.sprites.length);
+      if (spriteSheet.sprites.length < maxNumberOfMonkeys) {
+        weakestSpriteSheetName = spriteSheet.name;
+        maxNumberOfMonkeys = spriteSheet.sprites.length;
+      }
     }
 
     const spriteSheetSubset = {};
@@ -439,6 +444,7 @@ const api = async (req, res, tempData) => {
     maxDifficulty: maxDifficulty,
     maxNumberOfMonkeys: maxNumberOfMonkeys,
     keySpriteSheetName: keySpriteSheetName,
+    weakestSpriteSheetName: weakestSpriteSheetName,
   };
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(response));
