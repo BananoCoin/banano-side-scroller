@@ -17,14 +17,6 @@ const WHITE = 'FFFFFFFF';
 const PICTURE_SIZE = 128;
 
 const COLORS = [
-  'aqua', 'lime', 'silver',
-  // 'black',
-  'maroon', 'teal',
-  'blue', 'navy',
-  // 'white',
-  'fuchsia', 'olive', 'yellow',
-  'gray', 'purple',
-  'green', 'red',
 ];
 
 // variables
@@ -44,6 +36,7 @@ const init = (_config, _loggingUtil) => {
   }
   config = _config;
   loggingUtil = _loggingUtil;
+  loadColors();
   loadAbstractSpriteSheets();
 };
 
@@ -51,6 +44,28 @@ const deactivate = () => {
   config = undefined;
   loggingUtil = undefined;
   abstractSpriteSheets.length = 0;
+};
+
+const loadColors = () => {
+  // let rSet = new Set();
+  // let gSet = new Set();
+  // let bSet = new Set();
+  for (let r = 16; r < (256-14); r += 32) {
+    // rSet.add(r);
+    for (let g = 16; g < (256-14); g += 32) {
+      // gSet.add(g);
+      for (let b = 25; b < (256-25); b += 52) {
+        // bSet.add(b);
+        COLORS.push(`#${r.toString(16)}${g.toString(16)}${b.toString(16)}`);
+      }
+    }
+  }
+  // COLORS.length = 0;
+  // COLORS.push('white');
+  // console.log('rSet.size', rSet.size);
+  // console.log('gSet.size', gSet.size);
+  // console.log('bSet.size', bSet.size);
+  // console.log('COLORS.length', COLORS.length);
 };
 
 const loadAbstractSpriteSheets = () => {
@@ -63,6 +78,7 @@ const loadAbstractSpriteSheets = () => {
     const file = path.join(config.abstract.dir, `${spriteSheet.name}.png`);
     const data = fs.readFileSync(file);
     const spriteSheetPng = PNG.sync.read(data);
+    spriteSheetPng.name = spriteSheet.name;
     spriteSheet.sprites = parseSpriteSheetPng(spriteSheetPng);
     if (maxMonkeyCount === undefined) {
       maxMonkeyCount = spriteSheet.sprites.length;
@@ -77,6 +93,7 @@ const loadAbstractSpriteSheets = () => {
       sprite.dy = spriteSheet.dy;
       sprite.align = spriteSheet.align;
     }
+    console.log('spriteSheet', spriteSheet.name, spriteSheet.sprites.length, spriteSheet.sprites.length/COLORS.length);
   }
   // must have an odd number of monkeys,
   // so the max monkey count must be odd.
@@ -280,8 +297,8 @@ const parseSpriteSheetPng = (png) => {
     for (let y = -1; y <= png.height; y++) {
       if (isUpperLeftCorner(png, x, y)) {
         const lrc = getLowerRightCorner(png, x, y);
-        // console.log('parseSpriteSheetPng', 'png.url', png.url, 'x', x, 'y', y,
-        // 'lowerRightCorner', lowerRightCorner);
+        // console.log('parseSpriteSheetPng', png.name, 'x', x, 'y', y,
+        // 'lowerRightCorner', lrc);
         if (lrc !== undefined) {
           const border = {
             x0: x+1, y0: y+1, x1: lrc.x, y1: lrc.y,
