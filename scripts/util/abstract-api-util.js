@@ -14,8 +14,6 @@ const TRANSPARENT = '00000000';
 const BLACK = '000000FF';
 const WHITE = 'FFFFFFFF';
 
-const PICTURE_SIZE = 128;
-
 const COLORS = [
 ];
 
@@ -72,28 +70,56 @@ const loadAbstractSpriteSheets = () => {
   abstractSpriteSheets.length = 0;
 
   const spriteSheets = config.abstract.spriteSheets;
+  const spriteOffsets = config.abstract.spriteOffsets;
   let maxMonkeyCount;
   for (let spriteSheetIx = 0; spriteSheetIx < spriteSheets.length; spriteSheetIx++) {
     const spriteSheet = spriteSheets[spriteSheetIx];
+
     const file = path.join(config.abstract.dir, `${spriteSheet.name}.png`);
     const data = fs.readFileSync(file);
     const spriteSheetPng = PNG.sync.read(data);
     spriteSheetPng.name = spriteSheet.name;
-    spriteSheet.sprites = parseSpriteSheetPng(spriteSheetPng);
+    const sprites = parseSpriteSheetPng(spriteSheetPng);
     if (maxMonkeyCount === undefined) {
-      maxMonkeyCount = spriteSheet.sprites.length;
+      maxMonkeyCount = sprites.length;
     } else {
-      maxMonkeyCount = Math.min(maxMonkeyCount, spriteSheet.sprites.length);
+      maxMonkeyCount = Math.min(maxMonkeyCount, sprites.length);
     }
-    for (let spriteIx = 0; spriteIx < spriteSheet.sprites.length; spriteIx++) {
-      const sprite = spriteSheet.sprites[spriteIx];
-      const spriteName = `${spriteSheet.name}_${spriteIx}`;
-      sprite.name = spriteName;
-      sprite.dx = spriteSheet.dx;
-      sprite.dy = spriteSheet.dy;
-      sprite.align = spriteSheet.align;
+
+    // console.log('spriteSheet', spriteSheet);
+    for (let spriteOffsetIx = 0; spriteOffsetIx < spriteOffsets.length; spriteOffsetIx++) {
+      const spriteOffset = spriteOffsets[spriteOffsetIx];
+      const abstractSpriteSheet = {};
+      abstractSpriteSheet.name = `${spriteSheet.name}_${spriteOffset.name}`;
+      abstractSpriteSheet.sprites = [];
+
+      // console.log('spriteOffset', spriteOffset);
+      for (let spriteIx = 0; spriteIx < sprites.length; spriteIx++) {
+        const sprite = sprites[spriteIx];
+        const spriteName = `${abstractSpriteSheet.name}_${spriteIx}`;
+        const spriteAtOffset = {};
+        spriteAtOffset.name = spriteName;
+        spriteAtOffset.dx = (spriteSheet.dx * spriteOffset.scale) + (spriteOffset.dx * 2);
+        spriteAtOffset.dy = (spriteSheet.dy * spriteOffset.scale) + (spriteOffset.dy * 2);
+        spriteAtOffset.scale = spriteOffset.scale;
+        spriteAtOffset.inverseScale = 1/spriteOffset.scale;
+        spriteAtOffset.align = spriteSheet.align;
+        spriteAtOffset.pixels = sprite.pixels;
+        spriteAtOffset.w = sprite.w;
+        spriteAtOffset.h = sprite.h;
+        spriteAtOffset.hasFillStyle = sprite.hasFillStyle;
+        // console.log('sprite', sprite);
+        // console.log('spriteSheet', spriteSheet);
+        // console.log('spriteOffset', spriteOffset);
+        // console.log('spriteAtOffset', spriteAtOffset);
+
+        abstractSpriteSheet.sprites.push(spriteAtOffset);
+      }
+
+      abstractSpriteSheets.push(abstractSpriteSheet);
+
+      console.log('abstractSpriteSheet', abstractSpriteSheet.name, abstractSpriteSheet.sprites.length, abstractSpriteSheet.sprites.length/COLORS.length);
     }
-    console.log('spriteSheet', spriteSheet.name, spriteSheet.sprites.length, spriteSheet.sprites.length/COLORS.length);
   }
   // must have an odd number of monkeys,
   // so the max monkey count must be odd.
@@ -269,14 +295,19 @@ const getSpriteData = (png, border, color) => {
     w: (x1-x0)+1,
     h: (y1-y0)+1,
   };
+  const scale = 1/Math.max(spriteData.w, spriteData.h);
+  const tenthScale = 0.02 * scale;
+  const twentiethScale = 0.01 * scale;
+  spriteData.w *= scale;
+  spriteData.h *= scale;
   for (let x = x0; x <= x1; x++) {
     for (let y = y0; y <= y1; y++) {
       const pixel = getPixel(png, x, y);
       const spriteDataElt = {
-        x: x-x0,
-        y: y-y0,
-        w: 1,
-        h: 1,
+        x: ((x-x0)*scale) - twentiethScale,
+        y: ((y-y0)*scale) - twentiethScale,
+        w: scale + tenthScale,
+        h: scale + tenthScale,
         fillStyle: `#${pixel}`,
       };
       if (pixel == WHITE) {
@@ -324,11 +355,26 @@ const parseSpriteSheetPng = (png) => {
   return spriteSheet;
 };
 
+const alignSprite = (sprite, scale) => {
+  // return center, until we figure it out.
+  return ((sprite.h - scale) / 2) - (scale * sprite.dy);
+
+  switch (sprite.align) {
+    case 'top':
+      return 0;
+    case 'center':
+      return (sprite.h - scale) / 2;
+    case 'bottom':
+      return sprite.h - scale;
+  }
+  return 0;
+};
+
 const api = async (req, res, tempData) => {
   const numberOfMonkeys = getValueAndNormalize(tempData, 'numberOfMonkeys', true);
   const maxDifficulty = Math.floor((numberOfMonkeys-1)/2);
   const difficulty = getValueAndNormalize(tempData, 'difficulty', false, maxDifficulty);
-  const spriteSheets = config.abstract.spriteSheets;
+  const spriteSheets = abstractSpriteSheets;
   const keySpriteSheetName = randomUtil.getRandomArrayElt(spriteSheets).name;
 
   // for a single monkey, for the key sprite sheet, the monkey will
@@ -395,22 +441,26 @@ const api = async (req, res, tempData) => {
       const spriteSheet = spriteSheetsSubset[spriteSheetIx];
       const spriteIx = (monkeyIx + spriteSheetIx) % spriteSheet.sprites.length;
       const sprite = spriteSheet.sprites[spriteIx];
+      // console.log('sprite', sprite);
       maxW = Math.max(maxW, sprite.w);
       maxH = Math.max(maxH, sprite.h);
       sprites.push(sprite);
     }
     sprites.reverse();
 
-    const canvas = createCanvas(PICTURE_SIZE*2, PICTURE_SIZE*2);
+    const canvasSize = config.abstract.pictureSize*2;
+    const canvas = createCanvas(canvasSize, canvasSize);
     const ctx = canvas.getContext('2d');
     const scale = Math.max(maxW, maxH);
-    ctx.scale(PICTURE_SIZE/scale, PICTURE_SIZE/scale);
+    const contextScale = config.abstract.pictureSize/scale;
+    ctx.scale(contextScale, contextScale);
     // console.log('scale', scale, maxW, maxH);
 
     for (let spriteIx = 0; spriteIx < sprites.length; spriteIx++) {
       const sprite = sprites[spriteIx];
       const dx = ((sprite.w - scale) / 2) - (scale * sprite.dx);
-      const dy = ((sprite.h - scale) / 2) - (scale * sprite.dy);
+      // const dy = ((sprite.h - scale) / 2) - (scale * sprite.dy);
+      const dy = alignSprite(sprite, scale);
       // console.log('spriteIx', spriteIx, dx, dy, scale, sprite.dx, sprite.dy);
       // console.log('sprite', sprite, dx, dy);
       ctx.translate(-dx, -dy);
@@ -468,12 +518,14 @@ const api = async (req, res, tempData) => {
 };
 
 const addSprite = (ctx, sprite) => {
+  ctx.scale(sprite.scale, sprite.scale);
   for (let pixelIx = 0; pixelIx < sprite.pixels.length; pixelIx++) {
     const pixel = sprite.pixels[pixelIx];
     // console.log('pixel', pixel);
     ctx.fillStyle = pixel.fillStyle;
-    ctx.fillRect(pixel.x+0.1, pixel.y+0.1, pixel.w+0.1, pixel.h+0.1);
+    ctx.fillRect(pixel.x, pixel.y, pixel.w, pixel.h);
   }
+  ctx.scale(sprite.inverseScale, sprite.inverseScale);
 };
 
 const resetApi = (tempData) => {

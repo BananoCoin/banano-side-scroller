@@ -39,3 +39,9 @@
 .display_none {
   display: none;
 }
+
+img {
+  border: solid;
+  border-width: 1px;
+  border-color: #000;
+}

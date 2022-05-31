@@ -131,7 +131,18 @@
   "maxPendingBananos": 10,
   "pngChunkDir": "chunks",
   "abstract": {
+    "pictureSize": 256,
     "dir": "abstract-sprite-sheets",
+    "spriteOffsets": [
+      { "name": "UL", "dx": 0.0, "dy": 0.0, "scale": 0.5 },
+      { "name": "LL", "dx": 0.0, "dy": 0.5, "scale": 0.5 },
+      { "name": "UR", "dx": 0.5, "dy": 0.0, "scale": 0.5 },
+      { "name": "LR", "dx": 0.5, "dy": 0.5, "scale": 0.5 }
+    ],
+    "!spriteOffsets": [
+      { "name": "UL", "dx": 0.45, "dy": 0.45, "scale": 0.5 },
+      { "name": "LR", "dx": 0.0, "dy": 0.0, "scale": 0.5 }
+    ],
     "spriteSheets": [
       { "name": "eyes", "dx": 0.5, "dy": 0.4, "align": "center" },
       { "name": "hat", "dx": 0.5, "dy": 0.0, "align": "bottom" },
