@@ -97,6 +97,10 @@
     {
       "name": "space",
       "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/space/static-html/"
+    },
+    {
+      "name": "fancy",
+      "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/fancy/static-html/"
     }
   ],
   "web": {
