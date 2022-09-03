@@ -158,23 +158,16 @@ const getSessionInfo = async () => {
 const receivePending = async (representative, seed, seedIx) => {
   const account = await bananojs.getBananoAccountFromSeed(seed, seedIx);
   const pendingList = [];
-  let noPending = false;
-  while (!noPending) {
-    const pending = await bananojs.getAccountsPending([account], config.maxPendingBananos, true);
-    if (pending !== undefined) {
-      // loggingUtil.log(dateUtil.getDate(), 'account', account, 'pending', pending);
-      if (pending.error) {
-        noPending = true;
-      } else {
-        const pendingBlocks = pending.blocks[account];
-        const hashes = [...Object.keys(pendingBlocks)];
-        if (hashes.length !== 0) {
-          const hash = hashes[0];
-          const response = await bananojs.receiveBananoDepositsForSeed(seed, seedIx, representative, hash);
-          pendingList.push(response);
-        } else {
-          noPending = true;
-        }
+  const pending = await bananojs.getAccountsPending([account], config.maxPendingBananos, true);
+  if (pending !== undefined) {
+    // loggingUtil.log(dateUtil.getDate(), 'account', account, 'pending', pending);
+    const pendingBlocks = pending.blocks[account];
+    if (pendingBlocks !== undefined) {
+      const hashes = [...Object.keys(pendingBlocks)];
+      if (hashes.length !== 0) {
+        const hash = hashes[0];
+        const response = await bananojs.receiveBananoDepositsForSeed(seed, seedIx, representative, hash);
+        pendingList.push(response);
       }
     }
   }
