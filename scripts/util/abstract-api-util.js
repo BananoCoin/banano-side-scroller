@@ -118,7 +118,7 @@ const loadAbstractSpriteSheets = () => {
 
       abstractSpriteSheets.push(abstractSpriteSheet);
 
-      console.log('abstractSpriteSheet', abstractSpriteSheet.name, abstractSpriteSheet.sprites.length, abstractSpriteSheet.sprites.length/COLORS.length);
+      // console.log('abstractSpriteSheet', abstractSpriteSheet.name, abstractSpriteSheet.sprites.length, abstractSpriteSheet.sprites.length/COLORS.length);
     }
   }
   // must have an odd number of monkeys,

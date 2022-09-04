@@ -113,6 +113,9 @@
     "recaptchaFailRetryTimeMs": 5000,
     "recaptchaSuccessRetryTimeMs": 30000
   },
+  "rateLimit": {
+    "maxCallsPerMinute": 30
+  },
   "bananodeApiUrl": "",
   "cookieSecret": "",
   "adminKey": "",

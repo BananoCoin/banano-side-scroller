@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const awaitSemaphore = require('await-semaphore');
 const bananojs = require('@bananocoin/bananojs');
+const rateLimitUtil = require('./rate-limit-util.js');
 
 // modules
 const dateUtil = require('./date-util.js');
@@ -35,6 +36,11 @@ const init = (_config, _loggingUtil) => {
   mutex = new awaitSemaphore.Mutex();
 
   bananojs.setBananodeApiUrl(config.bananodeApiUrl);
+
+  bananojs.set;
+
+  const proxy = rateLimitUtil.wrap(bananojs.getBananodeApiProxy());
+  bananojs.setBananodeApiProxy(proxy);
 
   walletAccountBalanceDescription = 'loading...';
 
@@ -186,6 +192,7 @@ const receiveWalletPending = async () => {
     walletAccountBalanceDescription = await getAccountBalanceDescription(config.walletSeed, config.walletSeedIx);
     setSessionStatus('after get account balance description.');
   } catch (error) {
+    loggingUtil.trace(dateUtil.getDate(), 'receiveWalletPending', 'error', error);
     setSessionStatus(`error '${error.message}' at ${dateUtil.getDate()}`);
   }
 };
