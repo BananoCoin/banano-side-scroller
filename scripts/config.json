@@ -84,11 +84,11 @@
   "dataPacks": [
     {
       "name": "minimal",
-      "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/minimal/static-html/"
+      "url": "/data-packs/minimal/"
     },
     {
       "name": "basic",
-      "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/basic/static-html/"
+      "url": "/data-packs/basic/"
     },
     {
       "name": "volcano",
@@ -96,11 +96,11 @@
     },
     {
       "name": "space",
-      "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/space/static-html/"
+      "url": "/data-packs/space/"
     },
     {
       "name": "fancy",
-      "url": "https://raw.githubusercontent.com/BananoCoin/banano-side-scroller/main/docs/sample-data-pack/fancy/static-html/"
+      "url": "/data-packs/fancy/"
     }
   ],
   "web": {
