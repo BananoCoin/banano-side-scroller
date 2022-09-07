@@ -11,6 +11,9 @@ let config;
 let loggingUtil;
 const callsPerSecondMap = new Map();
 let maxCallsPerMinute;
+let lastLimit;
+let lastRemaining;
+let lastReset;
 /* eslint-enable no-unused-vars */
 
 // functions
@@ -121,14 +124,41 @@ const wrap = (module) => {
     proxyReq.end = function() {
       delay().then(() => {
         req.end();
+        // loggingUtil.log('rate-limit', 'end', 'histogram', getHistogram());
       });
     };
+    // loggingUtil.log('rate-limit', 'return', 'proxyReq', proxyReq);
     return proxyReq;
   };
-  // loggingUtil.debug('rate-limit', 'return', 'proxyHttps', proxyHttps);
+
+  // x-ratelimit-limit: 50
+  // x-ratelimit-remaining: 48
+  // x-ratelimit-reset: 1662507720
+
+  // loggingUtil.log('rate-limit', 'return', 'proxyHttps', proxyHttps);
   return proxyHttps;
+};
+
+const getHistogram = () => {
+  const histogram = [];
+  for (const [mapSecond, count] of callsPerSecondMap) {
+    const key = new Date(mapSecond*1000)
+        .toISOString()
+        .replace('T', ' ')
+        .replace('.000Z', '');
+    histogram.push({
+      bucket: key,
+      count: count,
+    });
+  }
+
+  // loggingUtil.log(dateUtil.getDate(), 'histogramMap', histogramMap);
+  // loggingUtil.log(dateUtil.getDate(), 'histogram', JSON.stringify(histogram));
+
+  return histogram;
 };
 
 exports.init = init;
 exports.deactivate = deactivate;
 exports.wrap = wrap;
+exports.getHistogram = getHistogram;

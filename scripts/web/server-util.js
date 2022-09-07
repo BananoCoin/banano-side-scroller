@@ -20,6 +20,7 @@ const abstractApiUtil = require('../util/abstract-api-util.js');
 const recaptchav3Util = require('../util/recaptchav3-util.js');
 const bananojsCacheUtil = require('../util/bananojs-cache-util.js');
 const paymentUtil = require('../util/payment-util.js');
+const rateLimitUtil = require('../util/rate-limit-util.js');
 
 // constants
 const version = require('../../package.json').version;
@@ -215,6 +216,8 @@ const initWebServer = async () => {
     data.session_status = await paymentUtil.getSessionStatus();
 
     data.recaptchav3_status = recaptchav3Util.getStatusCountMapArray();
+
+    data.rate_limit_histogram = rateLimitUtil.getHistogram();
 
     // loggingUtil.log(dateUtil.getDate(), 'scoreboard', JSON.stringify(data));
 

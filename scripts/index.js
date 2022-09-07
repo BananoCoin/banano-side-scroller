@@ -42,9 +42,9 @@ const init = async () => {
   modules.push(recaptchav3Util);
   modules.push(httpsUtil);
   modules.push(webServerUtil);
+  modules.push(rateLimitUtil);
   modules.push(paymentUtil);
   modules.push(abstractApiUtil);
-  modules.push(rateLimitUtil);
 
   for (let moduleIx = 0; moduleIx < modules.length; moduleIx++) {
     const item = modules[moduleIx];

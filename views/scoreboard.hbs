@@ -9,6 +9,28 @@
       <a href="{{wallet_account_url}}" target="_blank">
         <span id="walletAccount">{{wallet_account}}</span>
       </a>
+
+      <p>
+        Rate Limiting Number of Entries: {{rate_limit_histogram.length}}
+      <p>
+      <table class="t_center align_top display_inline_block bordered">
+        {{#if rate_limit_histogram}}
+          <tr>
+            <td class="align_top">Bucket</td>
+            <td class="align_top">Count</td>
+          </tr>
+        {{/if}}
+        {{#each rate_limit_histogram}}
+          <tr>
+            <td class="align_top">{{bucket}}</td>
+            <td class="align_top">{{count}}</td>
+          </tr>
+        {{else}}
+          <tr>
+            <td class="align_top">No Entries</td>
+          </tr>
+        {{/each}}
+      </table>
       <p>
         Session Status: {{session_status}}
       <p>
