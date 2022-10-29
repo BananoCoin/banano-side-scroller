@@ -159,13 +159,17 @@ const getAndClearAllScores = async () => {
       fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
-        const json = JSON.parse(data);
-        const score = parseInt(json.score, 10);
-        if (maxScoreByAccount[json.account] === undefined) {
-          maxScoreByAccount[json.account] = score;
-        } else {
-          const oldScore = maxScoreByAccount[json.account];
-          maxScoreByAccount[json.account] = Math.min(score, oldScore);
+        try {
+          const json = JSON.parse(data);
+          const score = parseInt(json.score, 10);
+          if (maxScoreByAccount[json.account] === undefined) {
+            maxScoreByAccount[json.account] = score;
+          } else {
+            const oldScore = maxScoreByAccount[json.account];
+            maxScoreByAccount[json.account] = Math.min(score, oldScore);
+          }
+        } catch (error) {
+          loggingUtil.trace(dateUtil.getDate(), 'getAndClearAllScores', 'error', accountFile, error.message);
         }
         fs.unlinkSync(accountFile);
       });
@@ -193,11 +197,15 @@ const getAccountBalances = async () => {
       fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
-        const json = JSON.parse(data);
-        const score = json.score;
-        const account = json.account;
-        if (parseInt(score, 10) !== 0) {
-          accounts.push({account: account, score: score});
+        try {
+          const json = JSON.parse(data);
+          const score = json.score;
+          const account = json.account;
+          if (parseInt(score, 10) !== 0) {
+            accounts.push({account: account, score: score});
+          }
+        } catch (error) {
+          loggingUtil.trace(dateUtil.getDate(), 'accountBalances', 'error', accountFile, error.message);
         }
       });
     }
@@ -215,19 +223,23 @@ const getHistogram = async () => {
       fs.readdirSync(config.bananojsCacheDataDir).forEach((file) => {
         const accountFile = path.join(config.bananojsCacheDataDir, file);
         const data = fs.readFileSync(accountFile, 'UTF-8');
-        const score = JSON.parse(data).score;
-        if (parseInt(score, 10) > 0) {
-          const scoreBucket = Math.max(1, Number(score).toString().length);
-          const bucket = `Score 1${'0'.repeat(scoreBucket - 1)} to 1${'0'.repeat(scoreBucket)}`;
+        try {
+          const score = JSON.parse(data).score;
+          if (parseInt(score, 10) > 0) {
+            const scoreBucket = Math.max(1, Number(score).toString().length);
+            const bucket = `Score 1${'0'.repeat(scoreBucket - 1)} to 1${'0'.repeat(scoreBucket)}`;
 
-          // loggingUtil.log(dateUtil.getDate(), 'histogram', 'score', score, 'bucket', bucket);
+            // loggingUtil.log(dateUtil.getDate(), 'histogram', 'score', score, 'bucket', bucket);
 
-          if (histogramMap.has(bucket)) {
-            const old = histogramMap.get(bucket);
-            histogramMap.set(bucket, old + 2);
-          } else {
-            histogramMap.set(bucket, 1);
+            if (histogramMap.has(bucket)) {
+              const old = histogramMap.get(bucket);
+              histogramMap.set(bucket, old + 2);
+            } else {
+              histogramMap.set(bucket, 1);
+            }
           }
+        } catch (error) {
+          loggingUtil.trace(dateUtil.getDate(), 'histogram', 'error', accountFile, error.message);
         }
       });
     }

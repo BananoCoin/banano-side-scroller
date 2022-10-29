@@ -382,13 +382,13 @@ const payEverybodyAndReopenSession = async () => {
               previous = result;
             }
           } catch (error) {
-            loggingUtil.log(dateUtil.getDate(), 'payment', 'error', error.message);
+            loggingUtil.trace(dateUtil.getDate(), 'payment', 'error', error.message);
           }
         }
       }
     }
   } catch (error) {
-    loggingUtil.log(dateUtil.getDate(), 'payment', 'error', error.message);
+    loggingUtil.trace(dateUtil.getDate(), 'payment', 'error', error.message);
   } finally {
     setSessionStartTime();
   }
