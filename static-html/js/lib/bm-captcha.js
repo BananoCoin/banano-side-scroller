@@ -120,7 +120,7 @@ bmcaptcha.showMonkeys = (id, json) => {
     const data = json.images.monkeys[imageIx];
     // console.log('showCaptcha', 'data', data);
     captchaImageElt.setAttribute('src', data);
-    captchaImageElt.setAttribute('class', 'white_background');
+    captchaImageElt.setAttribute('class', 'white_background bordered');
   });
 };
 
