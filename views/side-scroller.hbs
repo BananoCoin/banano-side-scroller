@@ -1,7 +1,7 @@
 <table class="t_center align_top display_inline_block not_selectable">
   <tr>
-    <td colspan="3" class="align_top">
-      <a href="/scoreboard" class="small">Scoreboard</a>
+    <td colspan="3" class="align_top firstrow">
+      <a href="/scoreboard" class="small scoreboard">Scoreboard</a>
       <select id="data_packs">
         {{#each data_packs}}
           <option value='{{name}}' {{selected}}>{{name}}</option>
@@ -10,18 +10,18 @@
     </td>
   </tr>
   <tr>
-    <td class="align_top">
+    <td class="align_top secondrow">
       <span id="score" class="small">Score: loading...</span>
       <span id="session" class="small">Session: loading...</span><br>
       <input id="account" type="text" size="66" max_length="64" onchange="updateAccount(); return false;" oninput="updateAccount(); return false;"></input>
     </td>
   </tr>
   <tr>
-    <td colspan="3" id="side_scroller" class="align_top">
+    <td colspan="3" id="side_scroller" class="align_top thirdrow">
     </td>
   </tr>
   <tr>
-    <td class="align_top">
+    <td class="align_top fourthrow">
       <button id="arrow-left" class="arrow_button" onclick="return moveLeft(event)">
         <img src="feathericons/arrow-left.svg" /><br>(Left Arrow)
       </button>
